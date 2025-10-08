@@ -20,37 +20,6 @@ export class TenantApplicationController {
         phone,
       }: ITenantApplicationCreate = req.body;
 
-      // Basic validation
-      if (!gym_name || !subdomain || !owner_name || !email) {
-        res.status(400).json({
-          success: false,
-          message:
-            "Missing required fields: gym_name, subdomain, owner_name, email",
-        });
-        return;
-      }
-
-      // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        res.status(400).json({
-          success: false,
-          message: "Invalid email format",
-        });
-        return;
-      }
-
-      // Validate subdomain format (alphanumeric, hyphens, no spaces)
-      const subdomainRegex = /^[a-z0-9-]+$/;
-      if (!subdomainRegex.test(subdomain)) {
-        res.status(400).json({
-          success: false,
-          message:
-            "Subdomain can only contain lowercase letters, numbers, and hyphens",
-        });
-        return;
-      }
-
       const application = await TenantApplicationService.create({
         gym_name,
         subdomain: subdomain.toLowerCase(),
@@ -87,31 +56,12 @@ export class TenantApplicationController {
    */
   static async getAll(req: Request, res: Response): Promise<void> {
     try {
-      const { status } = req.query;
-
-      let applications;
-      if (status && typeof status === "string") {
-        // Validate status
-        const validStatuses: TenantApplicationStatus[] = [
-          "PENDING_EMAIL",
-          "PENDING_REVIEW",
-          "APPROVED",
-          "REJECTED",
-        ];
-        if (!validStatuses.includes(status as TenantApplicationStatus)) {
-          res.status(400).json({
-            success: false,
-            message: "Invalid status parameter",
-          });
-          return;
-        }
-
-        applications = await TenantApplicationService.findByStatus(
-          status as TenantApplicationStatus
-        );
-      } else {
-        applications = await TenantApplicationService.findAll();
-      }
+      const { status } = req.query as { status?: string };
+      const applications = status
+        ? await TenantApplicationService.findByStatus(
+            status as TenantApplicationStatus
+          )
+        : await TenantApplicationService.findAll();
 
       res.status(200).json({
         success: true,
@@ -134,17 +84,7 @@ export class TenantApplicationController {
    */
   static async getById(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      const applicationId = parseInt(id);
-
-      if (isNaN(applicationId)) {
-        res.status(400).json({
-          success: false,
-          message: "Invalid application ID",
-        });
-        return;
-      }
-
+      const applicationId = parseInt(req.params.id);
       const application = await TenantApplicationService.findById(
         applicationId
       );
@@ -177,33 +117,11 @@ export class TenantApplicationController {
    */
   static async updateStatus(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      const { status, review_notes } = req.body;
-      const applicationId = parseInt(id);
-
-      if (isNaN(applicationId)) {
-        res.status(400).json({
-          success: false,
-          message: "Invalid application ID",
-        });
-        return;
-      }
-
-      // Validate status
-      const validStatuses: TenantApplicationStatus[] = [
-        "PENDING_EMAIL",
-        "PENDING_REVIEW",
-        "APPROVED",
-        "REJECTED",
-      ];
-      if (!status || !validStatuses.includes(status)) {
-        res.status(400).json({
-          success: false,
-          message: "Invalid or missing status",
-        });
-        return;
-      }
-
+      const applicationId = parseInt(req.params.id);
+      const { status, review_notes } = req.body as {
+        status: TenantApplicationStatus;
+        review_notes?: string;
+      };
       const updatedApplication = await TenantApplicationService.updateStatus(
         applicationId,
         status,
@@ -238,17 +156,7 @@ export class TenantApplicationController {
    */
   static async verifyEmail(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      const applicationId = parseInt(id);
-
-      if (isNaN(applicationId)) {
-        res.status(400).json({
-          success: false,
-          message: "Invalid application ID",
-        });
-        return;
-      }
-
+      const applicationId = parseInt(req.params.id);
       const updatedApplication = await TenantApplicationService.verifyEmail(
         applicationId
       );
@@ -303,17 +211,7 @@ export class TenantApplicationController {
    */
   static async delete(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      const applicationId = parseInt(id);
-
-      if (isNaN(applicationId)) {
-        res.status(400).json({
-          success: false,
-          message: "Invalid application ID",
-        });
-        return;
-      }
-
+      const applicationId = parseInt(req.params.id);
       const deleted = await TenantApplicationService.delete(applicationId);
 
       if (!deleted) {

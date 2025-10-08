@@ -79,20 +79,45 @@ app.get("/health", async (req, res) => {
 });
 
 // Import routes
-import tenantApplicationRoutes from "./routes/tenantApplicationRoutes";
+// Versioned routing
+import v1Router from "./routes/v1/index";
+import { API_VERSIONS } from "./config/apiVersion";
 
-// API routes
-app.use("/api/tenant-applications", tenantApplicationRoutes);
+// Attach version/metadata headers middleware
+app.use((req, res, next) => {
+  res.setHeader("X-API-Version", API_VERSIONS.current);
+  res.setHeader("X-API-Supported-Versions", API_VERSIONS.supported.join(","));
+  if (API_VERSIONS.deprecated.length) {
+    res.setHeader(
+      "X-API-Deprecated-Versions",
+      API_VERSIONS.deprecated.join(",")
+    );
+  }
+  next();
+});
 
-// API routes placeholder for other routes
+// Mount current version
+app.use("/api/v1", v1Router);
+
+// Backward compatibility: legacy un-versioned routes (temporary)
 app.use("/api", (req, res) => {
-  res.status(200).json({
+  res.status(301).json({
     success: true,
-    message:
-      "API base endpoint - use specific routes like /api/tenant-applications",
-    availableRoutes: {
-      "tenant-applications": "/api/tenant-applications",
+    message: "API base moved. Use versioned routes under /api/v1",
+    currentVersion: API_VERSIONS.current,
+    examples: {
+      tenantApplications: "/api/v1/tenant-applications",
     },
+  });
+});
+
+// Non-namespaced version info (explicit)
+app.get("/api/version", (req, res) => {
+  res.json({
+    success: true,
+    current: API_VERSIONS.current,
+    supported: API_VERSIONS.supported,
+    deprecated: API_VERSIONS.deprecated,
   });
 });
 
