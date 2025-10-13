@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { TenantApplicationController } from "../controllers/tenantApplicationController";
+import { TenantApplicationController } from "../controllers/tenantApplication.controller";
 import { validate } from "../middleware/validate";
 import {
   tenantApplicationCreateSchema,

@@ -21,9 +21,6 @@ const startServer = async () => {
       console.log(`📊 Health check: http://localhost:${PORT}/health`);
       console.log(`🏠 Homepage: http://localhost:${PORT}`);
       console.log(`🔗 API Base: http://localhost:${PORT}/api`);
-      console.log(
-        `📝 Tenant Applications: http://localhost:${PORT}/api/tenant-applications`
-      );
     });
   } catch (error) {
     console.error("❌ Failed to start server:", error);

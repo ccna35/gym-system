@@ -1,10 +1,16 @@
 import { Router } from "express";
-import tenantApplicationRoutes from "../tenantApplicationRoutes";
+import tenantApplicationRoutes from "../tenantApplication.routes";
+import authRoutes from "../auth.routes";
+import memberRoutes from "../member.routes";
+import planRoutes from "../plan.routes";
 
 const v1 = Router();
 
 // Mount feature routers under /api/v1
 v1.use("/tenant-applications", tenantApplicationRoutes);
+v1.use("/auth", authRoutes);
+v1.use("/members", memberRoutes);
+v1.use("/plans", planRoutes);
 
 // Version info route
 v1.get("/version", (req, res) => {

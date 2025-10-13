@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { TenantApplicationService } from "../services/tenantApplicationService";
+import { TenantApplicationService } from "../services/tenantApplication.service";
 import {
   ITenantApplicationCreate,
   TenantApplicationStatus,
