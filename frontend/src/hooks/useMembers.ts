@@ -1,0 +1,73 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { memberApi } from "../services/member.service";
+import { useAuthStore } from "../store/authStore";
+import type { MemberFormData } from "../types";
+import { toast } from "../lib/toast";
+
+export const useMembers = () => {
+  const tenantId = useAuthStore((state) => state.user?.tenant_id);
+
+  return useQuery({
+    queryKey: ["members", tenantId],
+    queryFn: () => memberApi.getAll(tenantId!),
+    enabled: !!tenantId,
+  });
+};
+
+export const useMember = (id: number) => {
+  const tenantId = useAuthStore((state) => state.user?.tenant_id);
+
+  return useQuery({
+    queryKey: ["member", id, tenantId],
+    queryFn: () => memberApi.getById(id, tenantId!),
+    enabled: !!id && !!tenantId,
+  });
+};
+
+export const useCreateMember = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: MemberFormData) => memberApi.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["members"] });
+      toast.success("Member created successfully!");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Failed to create member");
+    },
+  });
+};
+
+export const useUpdateMember = () => {
+  const queryClient = useQueryClient();
+  const tenantId = useAuthStore((state) => state.user?.tenant_id);
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<MemberFormData> }) =>
+      memberApi.update(id, tenantId!, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["members"] });
+      toast.success("Member updated successfully!");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Failed to update member");
+    },
+  });
+};
+
+export const useDeleteMember = () => {
+  const queryClient = useQueryClient();
+  const tenantId = useAuthStore((state) => state.user?.tenant_id);
+
+  return useMutation({
+    mutationFn: (id: number) => memberApi.delete(id, tenantId!),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["members"] });
+      toast.success("Member deleted successfully!");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Failed to delete member");
+    },
+  });
+};

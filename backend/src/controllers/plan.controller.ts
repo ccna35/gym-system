@@ -4,7 +4,8 @@ import { PlanService } from "../services/plan.service";
 export class PlanController {
   static async create(req: Request, res: Response) {
     try {
-      const plan = await PlanService.create(req.body);
+      const tenant_id = req.user?.tenant_id;
+      const plan = await PlanService.create({ ...req.body, tenant_id });
       res.status(201).json({ success: true, data: plan });
     } catch (error: any) {
       res.status(400).json({
@@ -26,7 +27,7 @@ export class PlanController {
   }
 
   static async getAll(req: Request, res: Response) {
-    const { tenant_id } = req.query as any;
+    const tenant_id = req.user?.tenant_id;
     const plans = await PlanService.getAll(Number(tenant_id));
     res.json({ success: true, data: plans });
   }

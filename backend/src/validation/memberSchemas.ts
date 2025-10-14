@@ -40,5 +40,4 @@ export const updateMemberSchema = Joi.object({
 
 export const memberIdSchema = Joi.object({
   id: Joi.number().integer().positive().required(),
-  tenant_id: Joi.number().integer().positive().required(),
 });

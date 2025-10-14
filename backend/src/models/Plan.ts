@@ -55,4 +55,10 @@ export class PlanModel {
     DELETE FROM plans
     WHERE id = ? AND tenant_id = ?
     `;
+
+  static readonly SELECT_BY_NAME_QUERY = `
+    SELECT * FROM plans
+    WHERE name = ? AND tenant_id = ?
+    LIMIT 1
+    `;
 }

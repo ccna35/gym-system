@@ -6,27 +6,30 @@ import {
   updateMemberSchema,
   memberIdSchema,
 } from "../validation/memberSchemas";
+import { requireAuth } from "../middleware/auth";
 
 const router = Router();
+
+router.use(requireAuth);
 
 router.post(
   "/",
   validate({ body: createMemberSchema }),
   MemberController.create
 );
-router.get("/", validate({ query: memberIdSchema }), MemberController.getAll);
+router.get("/", MemberController.getAll);
 router.get(
-  "/:id/:tenant_id",
+  "/:id",
   validate({ params: memberIdSchema }),
   MemberController.getById
 );
 router.put(
-  "/:id/:tenant_id",
+  "/:id",
   validate({ params: memberIdSchema, body: updateMemberSchema }),
   MemberController.update
 );
 router.delete(
-  "/:id/:tenant_id",
+  "/:id",
   validate({ params: memberIdSchema }),
   MemberController.delete
 );

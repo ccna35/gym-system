@@ -3,6 +3,14 @@ import { CreatePlanInput, IPlan, PlanModel } from "../models/Plan";
 
 export class PlanService {
   static async create(input: CreatePlanInput): Promise<IPlan> {
+    // Check first if a plan with the same name exists for the tenant
+    const existingPlans = await executeQuery(PlanModel.SELECT_BY_NAME_QUERY, [
+      input.name,
+      input.tenant_id,
+    ]);
+    if (existingPlans.length > 0) {
+      throw new Error("A plan with this name already exists.");
+    }
     const result = await executeQuery(PlanModel.INSERT_QUERY, [
       input.tenant_id,
       input.name,

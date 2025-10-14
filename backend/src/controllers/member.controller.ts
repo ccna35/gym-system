@@ -4,7 +4,8 @@ import { MemberService } from "../services/member.service";
 export class MemberController {
   static async create(req: Request, res: Response) {
     try {
-      const member = await MemberService.create(req.body);
+      const tenant_id = req.user?.tenant_id;
+      const member = await MemberService.create({ ...req.body, tenant_id });
       res.status(201).json({ success: true, data: member });
     } catch (error: any) {
       res.status(400).json({
@@ -26,7 +27,7 @@ export class MemberController {
   }
 
   static async getAll(req: Request, res: Response) {
-    const { tenant_id } = req.query as any;
+    const tenant_id = req.user?.tenant_id;
     const members = await MemberService.getAll(Number(tenant_id));
     res.json({ success: true, data: members });
   }

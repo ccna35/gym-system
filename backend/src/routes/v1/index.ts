@@ -3,6 +3,8 @@ import tenantApplicationRoutes from "../tenantApplication.routes";
 import authRoutes from "../auth.routes";
 import memberRoutes from "../member.routes";
 import planRoutes from "../plan.routes";
+import membershipRoutes from "../membership.routes";
+import paymentRoutes from "../payment.routes";
 
 const v1 = Router();
 
@@ -11,6 +13,8 @@ v1.use("/tenant-applications", tenantApplicationRoutes);
 v1.use("/auth", authRoutes);
 v1.use("/members", memberRoutes);
 v1.use("/plans", planRoutes);
+v1.use("/memberships", membershipRoutes);
+v1.use("/payments", paymentRoutes);
 
 // Version info route
 v1.get("/version", (req, res) => {

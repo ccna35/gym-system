@@ -1,7 +1,6 @@
 import Joi from "joi";
 
 export const createPlanSchema = Joi.object({
-  tenant_id: Joi.number().integer().positive().required(),
   name: Joi.string().max(120).trim().required(),
   duration_days: Joi.number().integer().positive().required(),
   price_cents: Joi.number().integer().min(0).required(),
@@ -10,7 +9,6 @@ export const createPlanSchema = Joi.object({
 });
 
 export const updatePlanSchema = Joi.object({
-  tenant_id: Joi.number().integer().positive().optional(),
   name: Joi.string().max(120).trim().optional(),
   duration_days: Joi.number().integer().positive().optional(),
   price_cents: Joi.number().integer().min(0).optional(),
