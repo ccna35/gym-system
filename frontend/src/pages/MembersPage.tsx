@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMembers, useDeleteMember } from "../hooks/useMembers";
 import { Plus, Edit, Trash2, Search, Loader2 } from "lucide-react";
-import { formatDate, getStatusColor } from "../lib/utils";
+import { formatDate, getMembershipStatusColor } from "../lib/utils";
 import { MemberModal } from "../components/members/MemberModal";
 import type { Member } from "../types";
 import { t } from "../i18n";
@@ -34,6 +34,19 @@ export const MembersPage = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingMember(null);
+  };
+
+  const getMembershipStatusLabel = (status: string) => {
+    switch (status) {
+      case "ACTIVE":
+        return t.memberships.active;
+      case "EXPIRING_SOON":
+        return t.memberships.expiringSoon;
+      case "EXPIRED":
+        return t.memberships.expired;
+      default:
+        return status;
+    }
   };
 
   if (isLoading) {
@@ -86,13 +99,21 @@ export const MembersPage = () => {
           <table className="table">
             <thead>
               <tr>
-                <th className="table-header">{t.members.fullName}</th>
-                <th className="table-header">{t.members.email}</th>
-                <th className="table-header">{t.members.phone}</th>
-                <th className="table-header">{t.common.status}</th>
-                <th className="table-header">{t.members.joinDate}</th>
-                <th className="table-header">{t.members.remainingAmount}</th>
-                <th className="table-header">{t.common.actions}</th>
+                <th className="table-header text-right">
+                  {t.members.fullName}
+                </th>
+                <th className="table-header text-right">{t.members.email}</th>
+                <th className="table-header text-right">{t.members.phone}</th>
+                <th className="table-header text-right">
+                  {t.members.membershipStatus}
+                </th>
+                <th className="table-header text-right">
+                  {t.members.joinDate}
+                </th>
+                <th className="table-header text-right">
+                  {t.members.remainingAmount}
+                </th>
+                <th className="table-header text-right">{t.common.actions}</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -119,13 +140,11 @@ export const MembersPage = () => {
                     </td>
                     <td className="table-cell">
                       <span
-                        className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
-                          member.status
+                        className={`px-2 py-1 text-xs font-semibold rounded-full ${getMembershipStatusColor(
+                          member.membership_status
                         )}`}
                       >
-                        {member.status === "ACTIVE"
-                          ? t.memberships.active
-                          : member.status}
+                        {getMembershipStatusLabel(member.membership_status)}
                       </span>
                     </td>
                     <td className="table-cell text-gray-500">

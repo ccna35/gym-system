@@ -62,11 +62,23 @@ export class MemberModel {
             )
            ) / 100,
           0
-        ) as remaining_amount
+        ) as remaining_amount,
+         CASE
+          WHEN NOW() > end_date THEN 'EXPIRED'
+          WHEN end_date <= DATE_ADD(NOW(), INTERVAL 7 DAY) THEN 'EXPIRING_SOON'
+          ELSE 'ACTIVE'
+         END AS membership_status
       FROM members m
-      LEFT JOIN memberships ms ON ms.member_id = m.id AND ms.tenant_id = m.tenant_id
+      LEFT JOIN (
+  SELECT t.*,
+         ROW_NUMBER() OVER (
+           PARTITION BY t.member_id
+           ORDER BY t.created_at DESC, t.id DESC
+         ) AS rn
+  FROM memberships t
+) AS ms ON ms.member_id = m.id AND ms.tenant_id = m.tenant_id AND ms.rn = 1
       WHERE m.tenant_id = ?
-      GROUP BY m.id
+      GROUP BY m.id, membership_status;
   `;
 
   static readonly UPDATE_MEMBER = `

@@ -81,6 +81,7 @@ export const ar = {
     searchMembers: "البحث عن الأعضاء",
     deleteConfirm: "هل أنت متأكد من حذف هذا العضو؟",
     remainingAmount: "المبلغ المتبقي",
+    membershipStatus: "حالة الاشتراك",
   },
 
   // Plans
@@ -126,6 +127,7 @@ export const ar = {
     selectPlan: "اختر خطة",
     autoCalculated: "يتم الحساب تلقائياً بناءً على مدة الخطة",
     deleteConfirm: "هل أنت متأكد من حذف هذا الاشتراك؟",
+    expiringSoon: "سينتهي قريباً",
   },
 
   // Payments
