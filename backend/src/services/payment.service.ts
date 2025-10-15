@@ -19,7 +19,9 @@ export class PaymentService {
     );
     const totalPaidCents = payments.reduce((sum, p) => sum + p.amount_cents, 0);
 
-    if (totalPaidCents + input.amount_cents > membership.price_cents) {
+    const inputAmountCents = input.amount * 100;
+
+    if (totalPaidCents + inputAmountCents > membership.price_cents) {
       throw new Error("Payment exceeds membership price");
     }
 
@@ -27,7 +29,7 @@ export class PaymentService {
     const result = await executeQuery(PaymentModel.INSERT_QUERY, [
       input.tenant_id,
       input.membership_id,
-      input.amount_cents,
+      inputAmountCents, // Store amount in cents
       input.method ?? "CASH",
       input.status ?? "PAID",
       input.notes ?? null,
@@ -49,8 +51,6 @@ export class PaymentService {
   }
 
   static async getAll(tenant_id: number): Promise<IPayment[]> {
-    console.log("tenant_id", tenant_id);
-
     const rows = await executeQuery(PaymentModel.SELECT_BY_TENANT, [tenant_id]);
     return rows as IPayment[];
   }

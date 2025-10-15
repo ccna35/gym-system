@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { registerSchema, type RegisterFormData } from "../lib/validations";
 import { useRegister } from "../hooks/useAuth";
 import { Loader2 } from "lucide-react";
+import { t } from "../i18n";
 
 export const RegisterPage = () => {
   const {
@@ -32,8 +33,10 @@ export const RegisterPage = () => {
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           {/* Logo/Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">GymSystem</h1>
-            <p className="mt-2 text-gray-600">Create your account</p>
+            <h1 className="text-3xl font-bold text-gray-900">
+              نظام الصالة الرياضية
+            </h1>
+            <p className="mt-2 text-gray-600">{t.auth.register}</p>
           </div>
 
           {/* Form */}
@@ -57,7 +60,7 @@ export const RegisterPage = () => {
             {/* Full Name */}
             <div>
               <label htmlFor="full_name" className="label">
-                Full Name
+                {t.auth.name}
               </label>
               <input
                 id="full_name"
@@ -74,7 +77,7 @@ export const RegisterPage = () => {
             {/* Email */}
             <div>
               <label htmlFor="email" className="label">
-                Email Address
+                {t.auth.email}
               </label>
               <input
                 id="email"
@@ -92,7 +95,7 @@ export const RegisterPage = () => {
             {/* Phone */}
             <div>
               <label htmlFor="phone" className="label">
-                Phone Number (Optional)
+                {t.members.phone} (Optional)
               </label>
               <input
                 id="phone"
@@ -109,7 +112,7 @@ export const RegisterPage = () => {
             {/* Password */}
             <div>
               <label htmlFor="password" className="label">
-                Password
+                {t.auth.password}
               </label>
               <input
                 id="password"
@@ -127,7 +130,7 @@ export const RegisterPage = () => {
             {/* Confirm Password */}
             <div>
               <label htmlFor="confirmPassword" className="label">
-                Confirm Password
+                تأكيد كلمة المرور
               </label>
               <input
                 id="confirmPassword"
@@ -158,11 +161,11 @@ export const RegisterPage = () => {
             >
               {registerMutation.isPending ? (
                 <>
-                  <Loader2 className="animate-spin mr-2" size={20} />
-                  Creating account...
+                  <Loader2 className="animate-spin ml-2" size={20} />
+                  {t.common.loading}
                 </>
               ) : (
-                "Create Account"
+                t.auth.signUp
               )}
             </button>
           </form>
@@ -170,12 +173,12 @@ export const RegisterPage = () => {
           {/* Login Link */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Already have an account?{" "}
+              {t.auth.alreadyHaveAccount}{" "}
               <Link
                 to="/login"
                 className="font-medium text-primary-600 hover:text-primary-500"
               >
-                Sign in here
+                {t.auth.signIn}
               </Link>
             </p>
           </div>

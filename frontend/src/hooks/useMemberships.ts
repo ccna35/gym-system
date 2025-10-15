@@ -9,8 +9,10 @@ export const useMemberships = () => {
 
   return useQuery({
     queryKey: ["memberships", tenantId],
-    queryFn: () => membershipApi.getAll(tenantId!),
+    queryFn: () => membershipApi.getAll(),
     enabled: !!tenantId,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -19,6 +21,8 @@ export const useMembership = (id: number) => {
     queryKey: ["membership", id],
     queryFn: () => membershipApi.getById(id),
     enabled: !!id,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -27,6 +31,8 @@ export const useMemberMemberships = (memberId: number) => {
     queryKey: ["memberships", "member", memberId],
     queryFn: () => membershipApi.getByMember(memberId),
     enabled: !!memberId,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 };
 

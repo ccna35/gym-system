@@ -2,7 +2,7 @@ import Joi from "joi";
 
 export const createPaymentSchema = Joi.object({
   membership_id: Joi.number().integer().positive().required(),
-  amount_cents: Joi.number().integer().min(0).required(),
+  amount: Joi.number().integer().min(0).required(),
   method: Joi.string().valid("CASH").default("CASH"),
   status: Joi.string().valid("PAID", "VOID").default("PAID"),
   notes: Joi.string().max(255).allow(null, "").optional(),

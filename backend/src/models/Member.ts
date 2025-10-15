@@ -49,7 +49,24 @@ export class MemberModel {
   `;
 
   static readonly SELECT_MEMBERS_BY_TENANT = `
-    SELECT * FROM members WHERE tenant_id = ? ORDER BY created_at DESC
+    SELECT 
+        m.*,
+        COALESCE(
+          SUM(
+            ms.price_cents - COALESCE(
+              (SELECT SUM(p.amount_cents) 
+               FROM payments p 
+               WHERE p.membership_id = ms.id 
+               AND p.status = 'PAID'),
+              0
+            )
+           ) / 100,
+          0
+        ) as remaining_amount
+      FROM members m
+      LEFT JOIN memberships ms ON ms.member_id = m.id AND ms.tenant_id = m.tenant_id
+      WHERE m.tenant_id = ?
+      GROUP BY m.id
   `;
 
   static readonly UPDATE_MEMBER = `

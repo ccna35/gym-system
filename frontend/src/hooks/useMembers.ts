@@ -9,8 +9,10 @@ export const useMembers = () => {
 
   return useQuery({
     queryKey: ["members", tenantId],
-    queryFn: () => memberApi.getAll(tenantId!),
+    queryFn: () => memberApi.getAll(),
     enabled: !!tenantId,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -21,6 +23,8 @@ export const useMember = (id: number) => {
     queryKey: ["member", id, tenantId],
     queryFn: () => memberApi.getById(id, tenantId!),
     enabled: !!id && !!tenantId,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 };
 

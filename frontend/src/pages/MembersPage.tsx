@@ -4,6 +4,7 @@ import { Plus, Edit, Trash2, Search, Loader2 } from "lucide-react";
 import { formatDate, getStatusColor } from "../lib/utils";
 import { MemberModal } from "../components/members/MemberModal";
 import type { Member } from "../types";
+import { t } from "../i18n";
 
 export const MembersPage = () => {
   const { data: members, isLoading } = useMembers();
@@ -25,7 +26,7 @@ export const MembersPage = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (window.confirm("Are you sure you want to delete this member?")) {
+    if (window.confirm(t.members.deleteConfirm)) {
       deleteMember.mutate(id);
     }
   };
@@ -48,15 +49,17 @@ export const MembersPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Members</h1>
-          <p className="text-gray-600 mt-1">Manage your gym members</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {t.members.title}
+          </h1>
+          <p className="text-gray-600 mt-1">{t.members.subtitle}</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
           className="btn btn-primary flex items-center"
         >
-          <Plus size={20} className="mr-2" />
-          Add Member
+          <Plus size={20} className="ml-2" />
+          {t.members.addMember}
         </button>
       </div>
 
@@ -64,15 +67,15 @@ export const MembersPage = () => {
       <div className="card">
         <div className="relative">
           <Search
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
             size={20}
           />
           <input
             type="text"
-            placeholder="Search members by name, email, or phone..."
+            placeholder={t.members.searchMembers}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="input pl-10"
+            className="input pr-10"
           />
         </div>
       </div>
@@ -83,12 +86,13 @@ export const MembersPage = () => {
           <table className="table">
             <thead>
               <tr>
-                <th className="table-header">Name</th>
-                <th className="table-header">Email</th>
-                <th className="table-header">Phone</th>
-                <th className="table-header">Status</th>
-                <th className="table-header">Joined</th>
-                <th className="table-header">Actions</th>
+                <th className="table-header">{t.members.fullName}</th>
+                <th className="table-header">{t.members.email}</th>
+                <th className="table-header">{t.members.phone}</th>
+                <th className="table-header">{t.common.status}</th>
+                <th className="table-header">{t.members.joinDate}</th>
+                <th className="table-header">{t.members.remainingAmount}</th>
+                <th className="table-header">{t.common.actions}</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -98,7 +102,7 @@ export const MembersPage = () => {
                     colSpan={6}
                     className="px-6 py-12 text-center text-gray-500"
                   >
-                    No members found. Add your first member to get started!
+                    {t.common.noData}
                   </td>
                 </tr>
               ) : (
@@ -119,25 +123,33 @@ export const MembersPage = () => {
                           member.status
                         )}`}
                       >
-                        {member.status}
+                        {member.status === "ACTIVE"
+                          ? t.memberships.active
+                          : member.status}
                       </span>
                     </td>
                     <td className="table-cell text-gray-500">
                       {formatDate(member.created_at)}
+                    </td>
+                    <td className="table-cell text-gray-500">
+                      {parseFloat(member.remaining_amount).toLocaleString(
+                        undefined,
+                        { style: "currency", currency: "USD" }
+                      )}
                     </td>
                     <td className="table-cell">
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleEdit(member)}
                           className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                          title="Edit"
+                          title={t.common.edit}
                         >
                           <Edit size={18} />
                         </button>
                         <button
                           onClick={() => handleDelete(member.id)}
                           className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                          title="Delete"
+                          title={t.common.delete}
                         >
                           <Trash2 size={18} />
                         </button>

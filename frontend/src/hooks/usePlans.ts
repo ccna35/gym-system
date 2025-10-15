@@ -9,8 +9,10 @@ export const usePlans = () => {
 
   return useQuery({
     queryKey: ["plans", tenantId],
-    queryFn: () => planApi.getAll(tenantId!),
+    queryFn: () => planApi.getAll(),
     enabled: !!tenantId,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -21,6 +23,8 @@ export const usePlan = (id: number) => {
     queryKey: ["plan", id, tenantId],
     queryFn: () => planApi.getById(id, tenantId!),
     enabled: !!id && !!tenantId,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 };
 

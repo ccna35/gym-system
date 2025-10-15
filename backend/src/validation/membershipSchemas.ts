@@ -6,10 +6,7 @@ export const createMembershipSchema = Joi.object({
   start_date: Joi.string()
     .pattern(/^\d{4}-\d{2}-\d{2}$/)
     .required(),
-  end_date: Joi.string()
-    .pattern(/^\d{4}-\d{2}-\d{2}$/)
-    .required(),
-  price_cents: Joi.number().integer().min(0).required(),
+  price: Joi.number().integer().min(0).required(),
   status: Joi.string()
     .valid("PENDING", "ACTIVE", "EXPIRED", "CANCELLED")
     .default("PENDING"),

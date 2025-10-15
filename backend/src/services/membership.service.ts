@@ -21,8 +21,8 @@ export class MembershipService {
       input.member_id,
       input.plan_id ?? null,
       input.start_date,
-      input.end_date,
-      input.price_cents,
+      input.start_date,
+      input.price * 100, // Store price in cents
       input.status ?? "PENDING",
       input.notes ?? null,
       input.created_by,

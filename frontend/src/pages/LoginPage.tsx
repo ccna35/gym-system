@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { loginSchema, type LoginFormData } from "../lib/validations";
 import { useLogin } from "../hooks/useAuth";
 import { Loader2 } from "lucide-react";
+import { t } from "../i18n";
 
 export const LoginPage = () => {
   const {
@@ -29,8 +30,10 @@ export const LoginPage = () => {
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           {/* Logo/Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">GymSystem</h1>
-            <p className="mt-2 text-gray-600">Sign in to your account</p>
+            <h1 className="text-3xl font-bold text-gray-900">
+              نظام الصالة الرياضية
+            </h1>
+            <p className="mt-2 text-gray-600">{t.auth.loginSubtitle}</p>
           </div>
 
           {/* Form */}
@@ -54,7 +57,7 @@ export const LoginPage = () => {
             {/* Email */}
             <div>
               <label htmlFor="email" className="label">
-                Email Address
+                {t.auth.email}
               </label>
               <input
                 id="email"
@@ -72,7 +75,7 @@ export const LoginPage = () => {
             {/* Password */}
             <div>
               <label htmlFor="password" className="label">
-                Password
+                {t.auth.password}
               </label>
               <input
                 id="password"
@@ -95,11 +98,11 @@ export const LoginPage = () => {
             >
               {loginMutation.isPending ? (
                 <>
-                  <Loader2 className="animate-spin mr-2" size={20} />
-                  Signing in...
+                  <Loader2 className="animate-spin ml-2" size={20} />
+                  {t.common.loading}
                 </>
               ) : (
-                "Sign in"
+                t.auth.signIn
               )}
             </button>
           </form>
@@ -107,12 +110,12 @@ export const LoginPage = () => {
           {/* Register Link */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{" "}
+              {t.auth.dontHaveAccount}{" "}
               <Link
                 to="/register"
                 className="font-medium text-primary-600 hover:text-primary-500"
               >
-                Register here
+                {t.auth.signUp}
               </Link>
             </p>
           </div>

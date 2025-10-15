@@ -42,18 +42,12 @@ export const planSchema = z.object({
   price: z.number().positive("Price must be positive"),
 });
 
-export const membershipSchema = z
-  .object({
-    member_id: z.number().int().positive("Select a member"),
-    plan_id: z.number().int().positive("Select a plan"),
-    start_date: z.string().min(1, "Start date is required"),
-    end_date: z.string().min(1, "End date is required"),
-    status: z.enum(["ACTIVE", "EXPIRED", "SUSPENDED"]),
-  })
-  .refine((data) => new Date(data.end_date) > new Date(data.start_date), {
-    message: "End date must be after start date",
-    path: ["end_date"],
-  });
+export const membershipSchema = z.object({
+  member_id: z.number().int().positive("Select a member"),
+  start_date: z.string().min(1, "Start date is required"),
+  price: z.number().min(0, "Price must be non-negative").optional(),
+  status: z.enum(["ACTIVE", "EXPIRED", "SUSPENDED"]),
+});
 
 export const paymentSchema = z.object({
   membership_id: z.number().int().positive("Select a membership"),

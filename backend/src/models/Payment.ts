@@ -16,7 +16,7 @@ export interface IPayment {
 export interface CreatePaymentInput {
   tenant_id: number;
   membership_id: number;
-  amount_cents: number;
+  amount: number;
   method?: PaymentMethod;
   status?: PaymentStatus;
   notes?: string | null;
@@ -34,10 +34,17 @@ export class PaymentModel {
     SELECT * FROM payments WHERE id = ? AND tenant_id = ? LIMIT 1
   `;
 
-  // convert amount from cents to dollars
   static readonly SELECT_BY_TENANT = `
-    SELECT id, tenant_id, membership_id, amount_cents / 100 AS amount, method, status, notes, created_by, created_at
-    FROM payments WHERE tenant_id = ? ORDER BY created_at DESC
+    SELECT p.id, p.tenant_id, p.membership_id, p.amount_cents / 100 AS amount, p.method, p.status, p.notes, 
+      DATE_FORMAT(p.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,
+      mem.full_name AS member_name,
+      creator.full_name AS created_by_name
+    FROM payments p
+    JOIN memberships m ON p.membership_id = m.id
+    JOIN members mem ON m.member_id = mem.id
+    JOIN users creator ON p.created_by = creator.id
+    WHERE p.tenant_id = ? 
+    ORDER BY p.created_at DESC
   `;
 
   static readonly SELECT_BY_MEMBERSHIP = `

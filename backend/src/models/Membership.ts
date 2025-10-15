@@ -20,8 +20,7 @@ export interface CreateMembershipInput {
   member_id: number;
   plan_id?: number | null;
   start_date: string;
-  end_date: string;
-  price_cents: number;
+  price: number;
   status?: MembershipStatus;
   notes?: string | null;
   created_by: number;
@@ -39,8 +38,9 @@ export interface UpdateMembershipInput {
 export class MembershipModel {
   static readonly INSERT_QUERY = `
     INSERT INTO memberships
-    (tenant_id, member_id, plan_id, start_date, end_date, price_cents, status, notes, created_by)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (tenant_id, member_id, plan_id, start_date, end_date, price_cents, status, notes, created_by)
+    VALUES
+      (?, ?, ?, ?, DATE_ADD(?, INTERVAL 30 DAY), ?, ?, ?, ?);
   `;
 
   static readonly SELECT_BY_ID_QUERY = `

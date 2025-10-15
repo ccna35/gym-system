@@ -4,6 +4,7 @@ import { Plus, Edit, Trash2, Loader2 } from "lucide-react";
 import { formatCurrency } from "../lib/utils";
 import { PlanModal } from "../components/plans/PlanModal";
 import type { Plan } from "../types";
+import { t } from "../i18n";
 
 export const PlansPage = () => {
   const { data: plans, isLoading } = usePlans();
@@ -17,7 +18,7 @@ export const PlansPage = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (window.confirm("Are you sure you want to delete this plan?")) {
+    if (window.confirm(t.plans.deleteConfirm)) {
       deletePlan.mutate(id);
     }
   };
@@ -40,15 +41,15 @@ export const PlansPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Membership Plans</h1>
-          <p className="text-gray-600 mt-1">Manage your gym membership plans</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t.plans.title}</h1>
+          <p className="text-gray-600 mt-1">{t.plans.subtitle}</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
           className="btn btn-primary flex items-center"
         >
-          <Plus size={20} className="mr-2" />
-          Add Plan
+          <Plus size={20} className="ml-2" />
+          {t.plans.addPlan}
         </button>
       </div>
 
@@ -56,9 +57,7 @@ export const PlansPage = () => {
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {plans?.length === 0 ? (
           <div className="col-span-full card">
-            <p className="text-center text-gray-500 py-12">
-              No plans found. Add your first membership plan to get started!
-            </p>
+            <p className="text-center text-gray-500 py-12">{t.common.noData}</p>
           </div>
         ) : (
           plans?.map((plan) => (
@@ -72,14 +71,14 @@ export const PlansPage = () => {
                   <button
                     onClick={() => handleEdit(plan)}
                     className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                    title="Edit"
+                    title={t.common.edit}
                   >
                     <Edit size={18} />
                   </button>
                   <button
                     onClick={() => handleDelete(plan.id)}
                     className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    title="Delete"
+                    title={t.common.delete}
                   >
                     <Trash2 size={18} />
                   </button>
@@ -94,14 +93,14 @@ export const PlansPage = () => {
 
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Duration:</span>
+                  <span className="text-gray-600">{t.plans.duration}:</span>
                   <span className="font-medium text-gray-900">
                     {plan.duration_days}{" "}
                     {plan.duration_days === 1 ? "day" : "days"}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Price:</span>
+                  <span className="text-gray-600">{t.plans.price}:</span>
                   <span className="font-bold text-primary-600 text-lg">
                     {formatCurrency(plan.price_cents / 100)}
                   </span>
@@ -110,7 +109,8 @@ export const PlansPage = () => {
 
               <div className="pt-4 border-t">
                 <p className="text-xs text-gray-500">
-                  Created {new Date(plan.created_at).toLocaleDateString()}
+                  {t.common.created}{" "}
+                  {new Date(plan.created_at).toLocaleDateString()}
                 </p>
               </div>
             </div>

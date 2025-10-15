@@ -22,6 +22,7 @@ export interface Member {
   medical_notes?: string | null;
   photo_url?: string | null;
   status: "ACTIVE" | "EXPIRED" | "SUSPENDED";
+  remaining_amount: string;
   created_at: string;
   updated_at: string;
 }
@@ -55,10 +56,12 @@ export interface Payment {
   id: number;
   tenant_id: number;
   membership_id: number;
+  member_name: string;
   amount: number;
   payment_date: string;
   method: "CASH" | "CARD" | "BANK_TRANSFER";
   status: "PAID" | "VOID";
+  created_by_name: string;
   notes?: string | null;
   created_by: number;
   created_at: string;
@@ -122,15 +125,13 @@ export interface PlanFormData {
 
 export interface MembershipFormData {
   member_id: number;
-  plan_id: number;
   start_date: string;
-  end_date: string;
   status: "ACTIVE" | "EXPIRED" | "SUSPENDED";
 }
 
 export interface PaymentFormData {
   membership_id: number;
-  amount_cents: number;
+  amount: number;
   payment_date: string;
   payment_method: "CASH" | "CARD" | "BANK_TRANSFER";
   notes?: string;

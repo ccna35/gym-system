@@ -6,6 +6,7 @@ import { Plus, Edit, Trash2, Loader2, User, Calendar } from "lucide-react";
 import { formatDate, getStatusColor, formatCurrency } from "../lib/utils";
 import { MembershipModal } from "../components/memberships/MembershipModal";
 import type { Membership } from "../types";
+import { t } from "../i18n";
 
 export const MembershipsPage = () => {
   const { data: memberships, isLoading } = useMemberships();
@@ -23,7 +24,7 @@ export const MembershipsPage = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (window.confirm("Are you sure you want to delete this membership?")) {
+    if (window.confirm(t.memberships.deleteConfirm)) {
       deleteMembership.mutate(id);
     }
   };
@@ -58,15 +59,17 @@ export const MembershipsPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Memberships</h1>
-          <p className="text-gray-600 mt-1">Manage member subscription plans</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {t.memberships.title}
+          </h1>
+          <p className="text-gray-600 mt-1">{t.memberships.subtitle}</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
           className="btn btn-primary flex items-center"
         >
-          <Plus size={20} className="mr-2" />
-          New Membership
+          <Plus size={20} className="ml-2" />
+          {t.memberships.addMembership}
         </button>
       </div>
 
@@ -76,7 +79,7 @@ export const MembershipsPage = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">
-                Total Memberships
+                {t.memberships.total}
               </p>
               <p className="text-3xl font-bold text-gray-900 mt-2">
                 {memberships?.length || 0}
@@ -92,7 +95,7 @@ export const MembershipsPage = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">
-                Active Memberships
+                {t.memberships.active}
               </p>
               <p className="text-3xl font-bold text-green-600 mt-2">
                 {memberships?.filter((m) => m.status === "ACTIVE").length || 0}
@@ -108,7 +111,7 @@ export const MembershipsPage = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">
-                Expired Memberships
+                {t.memberships.expired}
               </p>
               <p className="text-3xl font-bold text-red-600 mt-2">
                 {memberships?.filter((m) => m.status === "EXPIRED").length || 0}
@@ -128,13 +131,23 @@ export const MembershipsPage = () => {
             <table className="table">
               <thead>
                 <tr>
-                  <th className="table-header">Member</th>
-                  <th className="table-header">Plan</th>
-                  <th className="table-header">Start Date</th>
-                  <th className="table-header">End Date</th>
-                  <th className="table-header">Status</th>
-                  <th className="table-header">Price</th>
-                  <th className="table-header">Actions</th>
+                  <th className="table-header text-right">
+                    {t.memberships.member}
+                  </th>
+                  <th className="table-header text-right">
+                    {t.memberships.plan}
+                  </th>
+                  <th className="table-header text-right">
+                    {t.memberships.startDate}
+                  </th>
+                  <th className="table-header text-right">
+                    {t.memberships.endDate}
+                  </th>
+                  <th className="table-header text-right">{t.common.status}</th>
+                  <th className="table-header text-right">{t.plans.price}</th>
+                  <th className="table-header text-right">
+                    {t.common.actions}
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -163,7 +176,13 @@ export const MembershipsPage = () => {
                             membership.status
                           )}`}
                         >
-                          {membership.status}
+                          {membership.status === "ACTIVE"
+                            ? t.memberships.active
+                            : membership.status === "EXPIRED"
+                            ? t.memberships.expired
+                            : membership.status === "SUSPENDED"
+                            ? t.memberships.suspended
+                            : membership.status}
                         </span>
                       </td>
                       <td className="table-cell font-semibold text-primary-600">
@@ -174,14 +193,14 @@ export const MembershipsPage = () => {
                           <button
                             onClick={() => handleEdit(membership)}
                             className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                            title="Edit"
+                            title={t.common.edit}
                           >
                             <Edit size={18} />
                           </button>
                           <button
                             onClick={() => handleDelete(membership.id)}
                             className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Delete"
+                            title={t.common.delete}
                           >
                             <Trash2 size={18} />
                           </button>
@@ -195,7 +214,7 @@ export const MembershipsPage = () => {
           </div>
         ) : (
           <div className="p-12 text-center text-gray-500">
-            No memberships yet. Create your first membership!
+            {t.common.noData}
           </div>
         )}
       </div>

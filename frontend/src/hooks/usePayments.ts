@@ -11,6 +11,8 @@ export const usePayments = () => {
     queryKey: ["payments", tenantId],
     queryFn: () => paymentApi.getAll(),
     enabled: !!tenantId,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -21,6 +23,8 @@ export const usePayment = (id: number) => {
     queryKey: ["payment", id, tenantId],
     queryFn: () => paymentApi.getById(id, tenantId!),
     enabled: !!id && !!tenantId,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -29,6 +33,8 @@ export const useMembershipPayments = (membershipId: number) => {
     queryKey: ["payments", "membership", membershipId],
     queryFn: () => paymentApi.getByMembership(membershipId),
     enabled: !!membershipId,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -39,10 +45,16 @@ export const useCreatePayment = () => {
     mutationFn: (data: PaymentFormData) => paymentApi.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["payments"] });
-      toast.success("Payment recorded successfully!");
+      toast.success("تم تسجيل الدفعة بنجاح!");
     },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to record payment");
+    onError: (error: unknown) => {
+      let msg = "فشل تسجيل الدفعة";
+      if (typeof error === "object" && error !== null) {
+        // @ts-expect-error: error may have response/message from API
+        msg = error?.response?.data?.message || error?.message || msg;
+      }
+      if (msg === "Failed to record payment") msg = "فشل تسجيل الدفعة";
+      toast.error(msg);
     },
   });
 };
@@ -55,10 +67,16 @@ export const useDeletePayment = () => {
     mutationFn: (id: number) => paymentApi.delete(id, tenantId!),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["payments"] });
-      toast.success("Payment deleted successfully!");
+      toast.success("تم حذف الدفعة بنجاح!");
     },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to delete payment");
+    onError: (error: unknown) => {
+      let msg = "فشل حذف الدفعة";
+      if (typeof error === "object" && error !== null) {
+        // @ts-expect-error: error may have response/message from API
+        msg = error?.response?.data?.message || error?.message || msg;
+      }
+      if (msg === "Failed to delete payment") msg = "فشل حذف الدفعة";
+      toast.error(msg);
     },
   });
 };

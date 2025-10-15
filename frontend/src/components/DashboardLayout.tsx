@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import { t } from "../i18n";
 
 export const DashboardLayout = () => {
   const user = useAuthStore((state) => state.user);
@@ -24,11 +25,11 @@ export const DashboardLayout = () => {
   };
 
   const navigation = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Members", href: "/members", icon: Users },
-    { name: "Plans", href: "/plans", icon: CreditCard },
-    { name: "Memberships", href: "/memberships", icon: Calendar },
-    { name: "Payments", href: "/payments", icon: DollarSign },
+    { name: t.nav.dashboard, href: "/dashboard", icon: LayoutDashboard },
+    { name: t.nav.members, href: "/members", icon: Users },
+    { name: t.nav.plans, href: "/plans", icon: CreditCard },
+    { name: t.nav.memberships, href: "/memberships", icon: Calendar },
+    { name: t.nav.payments, href: "/payments", icon: DollarSign },
   ];
 
   return (
@@ -43,14 +44,17 @@ export const DashboardLayout = () => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        style={{ right: 0, left: "auto" }}
+        className={`fixed inset-y-0 z-30 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full border-l border-gray-200">
           {/* Logo */}
           <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
-            <h1 className="text-xl font-bold text-primary-600">GymSystem</h1>
+            <h1 className="text-xl font-bold text-primary-600">
+              نظام الصالة الرياضية
+            </h1>
             <button onClick={() => setSidebarOpen(false)} className="lg:hidden">
               <X size={24} />
             </button>
@@ -65,7 +69,7 @@ export const DashboardLayout = () => {
                 className="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-primary-50 hover:text-primary-700 transition-colors"
                 onClick={() => setSidebarOpen(false)}
               >
-                <item.icon size={20} className="mr-3" />
+                <item.icon size={20} className="ml-3" />
                 {item.name}
               </Link>
             ))}
@@ -90,15 +94,15 @@ export const DashboardLayout = () => {
               onClick={handleLogout}
               className="flex items-center w-full px-4 py-2 text-sm text-red-700 hover:bg-red-50 rounded-lg transition-colors"
             >
-              <LogOut size={18} className="mr-2" />
-              Logout
+              <LogOut size={18} className="ml-2" />
+              {t.nav.logout}
             </button>
           </div>
         </div>
       </aside>
 
       {/* Main content */}
-      <div className="lg:pl-64">
+      <div className="lg:pr-64">
         {/* Top bar */}
         <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-6 bg-white border-b border-gray-200">
           <button onClick={() => setSidebarOpen(true)} className="lg:hidden">

@@ -1,6 +1,7 @@
 import { useMembers } from "../hooks/useMembers";
 import { usePlans } from "../hooks/usePlans";
 import { Users, CreditCard, TrendingUp, DollarSign } from "lucide-react";
+import { t } from "../i18n";
 
 export const DashboardPage = () => {
   const { data: members } = useMembers();
@@ -13,25 +14,25 @@ export const DashboardPage = () => {
 
   const stats = [
     {
-      title: "Total Members",
+      title: t.dashboard.totalMembers,
       value: totalMembers,
       icon: Users,
       color: "bg-blue-500",
     },
     {
-      title: "Active Members",
+      title: t.dashboard.activeMembers,
       value: activeMembers,
       icon: TrendingUp,
       color: "bg-green-500",
     },
     {
-      title: "Total Plans",
+      title: t.dashboard.activePlans,
       value: totalPlans,
       icon: CreditCard,
       color: "bg-purple-500",
     },
     {
-      title: "Revenue",
+      title: t.dashboard.totalRevenue,
       value: "$0",
       icon: DollarSign,
       color: "bg-yellow-500",
@@ -42,10 +43,10 @@ export const DashboardPage = () => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-1">
-          Welcome to your gym management system
-        </p>
+        <h1 className="text-3xl font-bold text-gray-900">
+          {t.dashboard.title}
+        </h1>
+        <p className="text-gray-600 mt-1">{t.dashboard.subtitle}</p>
       </div>
 
       {/* Stats Grid */}
@@ -74,7 +75,7 @@ export const DashboardPage = () => {
         {/* Recent Members */}
         <div className="card">
           <h2 className="text-xl font-bold text-gray-900 mb-4">
-            Recent Members
+            {t.dashboard.recentMembers}
           </h2>
           <div className="space-y-3">
             {members?.slice(0, 5).map((member) => (
@@ -95,13 +96,15 @@ export const DashboardPage = () => {
                       : "bg-gray-100 text-gray-800"
                   }`}
                 >
-                  {member.status}
+                  {member.status === "ACTIVE"
+                    ? t.memberships.active
+                    : member.status}
                 </span>
               </div>
             ))}
             {(!members || members.length === 0) && (
               <p className="text-center text-gray-500 py-8">
-                No members yet. Add your first member!
+                {t.common.noData}
               </p>
             )}
           </div>
@@ -110,7 +113,7 @@ export const DashboardPage = () => {
         {/* Available Plans */}
         <div className="card">
           <h2 className="text-xl font-bold text-gray-900 mb-4">
-            Available Plans
+            {t.plans.title}
           </h2>
           <div className="space-y-3">
             {plans?.map((plan) => (
@@ -121,17 +124,18 @@ export const DashboardPage = () => {
                 <div>
                   <p className="font-medium text-gray-900">{plan.name}</p>
                   <p className="text-sm text-gray-500">
-                    {plan.duration_months} months
+                    {plan.duration_days}{" "}
+                    {plan.duration_days === 1 ? "day" : "days"}
                   </p>
                 </div>
                 <p className="text-lg font-bold text-primary-600">
-                  ${plan.price}
+                  ${plan.price_cents / 100}
                 </p>
               </div>
             ))}
             {(!plans || plans.length === 0) && (
               <p className="text-center text-gray-500 py-8">
-                No plans yet. Create your first plan!
+                {t.common.noData}
               </p>
             )}
           </div>
