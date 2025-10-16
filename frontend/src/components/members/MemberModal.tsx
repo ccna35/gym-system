@@ -6,7 +6,6 @@ import { memberSchema, type MemberFormData } from "../../lib/validations";
 import { useCreateMember, useUpdateMember } from "../../hooks/useMembers";
 import type { Member } from "../../types";
 import { t } from "../../i18n";
-import { toInputDate } from "../../lib/utils";
 
 interface MemberModalProps {
   isOpen: boolean;
