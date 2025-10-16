@@ -13,6 +13,23 @@ export function formatDate(date: string | Date): string {
   });
 }
 
+// Format a date value to YYYY-MM-DD for <input type="date">
+export function toInputDate(date?: string | Date | null): string {
+  if (!date) return "";
+  if (typeof date === "string") {
+    // Already in YYYY-MM-DD
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) return date;
+    // Extract from ISO-like string
+    const match = date.match(/^\d{4}-\d{2}-\d{2}/);
+    if (match) return match[0];
+  }
+  const d = typeof date === "string" ? new Date(date) : new Date(date);
+  if (isNaN(d.getTime())) return "";
+  // Adjust to local date to avoid timezone shifting to previous/next day
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return local.toISOString().split("T")[0];
+}
+
 export function formatCurrency(amount: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -45,6 +62,8 @@ export function getStatusColor(status: string): string {
       return "bg-green-100 text-green-800";
     case "EXPIRED":
       return "bg-red-100 text-red-800";
+    case "EXPIRING_SOON":
+      return "bg-yellow-100 text-yellow-800";
     case "SUSPENDED":
       return "bg-yellow-100 text-yellow-800";
     default:

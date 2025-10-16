@@ -25,13 +25,11 @@ export const memberApi = {
 
   update: async (
     id: number,
-    tenantId: number,
     data: Partial<MemberFormData>
   ): Promise<Member> => {
     const response = await axiosInstance.put<ApiResponse<Member>>(
       `/members/${id}`,
-      data,
-      { params: { tenant_id: tenantId } }
+      data
     );
     return response.data.data;
   },

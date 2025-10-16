@@ -45,11 +45,10 @@ export const useCreateMember = () => {
 
 export const useUpdateMember = () => {
   const queryClient = useQueryClient();
-  const tenantId = useAuthStore((state) => state.user?.tenant_id);
 
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<MemberFormData> }) =>
-      memberApi.update(id, tenantId!, data),
+      memberApi.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["members"] });
       toast.success("Member updated successfully!");

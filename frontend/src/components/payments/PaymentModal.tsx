@@ -4,8 +4,6 @@ import { z } from "zod";
 import { X, Loader2 } from "lucide-react";
 import { useCreatePayment } from "../../hooks/usePayments";
 import { useMemberships } from "../../hooks/useMemberships";
-import { useMembers } from "../../hooks/useMembers";
-import { usePlans } from "../../hooks/usePlans";
 import { t } from "../../i18n";
 
 const paymentSchema = z.object({
@@ -25,8 +23,6 @@ interface PaymentModalProps {
 
 export const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
   const { data: memberships } = useMemberships();
-  const { data: members } = useMembers();
-  const { data: plans } = usePlans();
   const createPayment = useCreatePayment();
 
   const {
@@ -60,14 +56,12 @@ export const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
   // Helper to get membership display text
   const getMembershipDisplay = (membershipId: number) => {
     const membership = memberships?.find((m) => m.id === membershipId);
+
     if (!membership) return "Unknown";
 
-    const member = members?.find((m) => m.id === membership.member_id);
-    const plan = plans?.find((p) => p.id === membership.plan_id);
-    const memberName = member?.full_name || "Unknown";
-    const planName = plan?.name || "Unknown Plan";
+    const memberName = membership?.member_name || "Unknown";
 
-    return `${memberName} - ${planName}`;
+    return memberName;
   };
 
   if (!isOpen) return null;

@@ -5,8 +5,8 @@ import { X, Loader2 } from "lucide-react";
 import { memberSchema, type MemberFormData } from "../../lib/validations";
 import { useCreateMember, useUpdateMember } from "../../hooks/useMembers";
 import type { Member } from "../../types";
-import { useAuthStore } from "../../store/authStore";
 import { t } from "../../i18n";
+import { toInputDate } from "../../lib/utils";
 
 interface MemberModalProps {
   isOpen: boolean;
@@ -15,7 +15,6 @@ interface MemberModalProps {
 }
 
 export const MemberModal = ({ isOpen, onClose, member }: MemberModalProps) => {
-  const tenantId = useAuthStore((state) => state.user?.tenant_id);
   const createMember = useCreateMember();
   const updateMember = useUpdateMember();
 
@@ -28,6 +27,7 @@ export const MemberModal = ({ isOpen, onClose, member }: MemberModalProps) => {
     resolver: zodResolver(memberSchema),
     defaultValues: {
       status: "ACTIVE",
+      dob: member?.dob || "",
     },
   });
 
@@ -64,10 +64,7 @@ export const MemberModal = ({ isOpen, onClose, member }: MemberModalProps) => {
         data,
       });
     } else {
-      await createMember.mutateAsync({
-        ...data,
-        tenant_id: tenantId!,
-      } as any);
+      await createMember.mutateAsync(data);
     }
     onClose();
     reset();

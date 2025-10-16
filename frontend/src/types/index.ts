@@ -43,6 +43,7 @@ export interface Membership {
   id: number;
   tenant_id: number;
   member_id: number;
+  member_name: string;
   plan_id: number;
   price: number;
   start_date: string;
@@ -127,7 +128,6 @@ export interface PlanFormData {
 export interface MembershipFormData {
   member_id: number;
   start_date: string;
-  status: "ACTIVE" | "EXPIRED" | "SUSPENDED";
 }
 
 export interface PaymentFormData {

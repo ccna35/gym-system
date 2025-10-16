@@ -45,12 +45,15 @@ export class MemberModel {
   `;
 
   static readonly SELECT_MEMBER_BY_ID = `
-    SELECT * FROM members WHERE id = ? AND tenant_id = ? LIMIT 1
+    SELECT m.*, 
+      DATE_FORMAT(m.dob, '%Y-%m-%d') as dob
+    FROM members m WHERE id = ? AND tenant_id = ? LIMIT 1
   `;
 
   static readonly SELECT_MEMBERS_BY_TENANT = `
     SELECT 
         m.*,
+        DATE_FORMAT(m.dob, '%Y-%m-%d') as dob,
         COALESCE(
           SUM(
             ms.price_cents - COALESCE(

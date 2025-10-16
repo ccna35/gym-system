@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { useMemberships, useDeleteMembership } from "../hooks/useMemberships";
-import { useMembers } from "../hooks/useMembers";
-import { usePlans } from "../hooks/usePlans";
-import { Plus, Edit, Trash2, Loader2, User, Calendar } from "lucide-react";
+import { useMemberships } from "../hooks/useMemberships";
+import { Plus, Loader2, User, Calendar } from "lucide-react";
 import { formatDate, getStatusColor, formatCurrency } from "../lib/utils";
 import { MembershipModal } from "../components/memberships/MembershipModal";
 import type { Membership } from "../types";
@@ -10,40 +8,29 @@ import { t } from "../i18n";
 
 export const MembershipsPage = () => {
   const { data: memberships, isLoading } = useMemberships();
-  const { data: members } = useMembers();
-  const { data: plans } = usePlans();
-  const deleteMembership = useDeleteMembership();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingMembership, setEditingMembership] = useState<Membership | null>(
     null
   );
 
-  const handleEdit = (membership: Membership) => {
-    setEditingMembership(membership);
-    setIsModalOpen(true);
-  };
-
-  const handleDelete = async (id: number) => {
-    if (window.confirm(t.memberships.deleteConfirm)) {
-      deleteMembership.mutate(id);
+  const getMembershipStatusLabel = (status: string) => {
+    switch (status) {
+      case "ACTIVE":
+        return t.memberships.active;
+      case "EXPIRING_SOON":
+        return t.memberships.expiringSoon;
+      case "EXPIRED":
+        return t.memberships.expired;
+      case "SUSPENDED":
+        return t.memberships.suspended;
+      default:
+        return status;
     }
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingMembership(null);
-  };
-
-  // Helper to get member name
-  const getMemberName = (memberId: number) => {
-    const member = members?.find((m) => m.id === memberId);
-    return member?.full_name || "Unknown";
-  };
-
-  // Helper to get plan details
-  const getPlanDetails = (planId: number) => {
-    const plan = plans?.find((p) => p.id === planId);
-    return plan || null;
   };
 
   if (isLoading) {
@@ -135,9 +122,6 @@ export const MembershipsPage = () => {
                     {t.memberships.member}
                   </th>
                   <th className="table-header text-right">
-                    {t.memberships.plan}
-                  </th>
-                  <th className="table-header text-right">
                     {t.memberships.startDate}
                   </th>
                   <th className="table-header text-right">
@@ -145,24 +129,17 @@ export const MembershipsPage = () => {
                   </th>
                   <th className="table-header text-right">{t.common.status}</th>
                   <th className="table-header text-right">{t.plans.price}</th>
-                  <th className="table-header text-right">
-                    {t.common.actions}
-                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {memberships.map((membership) => {
-                  const plan = getPlanDetails(membership.plan_id);
                   return (
                     <tr key={membership.id} className="hover:bg-gray-50">
                       <td className="table-cell font-medium">
                         <div className="flex items-center gap-2">
                           <User size={16} className="text-gray-400" />
-                          {getMemberName(membership.member_id)}
+                          {membership.member_name}
                         </div>
-                      </td>
-                      <td className="table-cell text-gray-600">
-                        {plan?.name || "N/A"}
                       </td>
                       <td className="table-cell text-gray-600">
                         {formatDate(membership.start_date)}
@@ -176,35 +153,11 @@ export const MembershipsPage = () => {
                             membership.status
                           )}`}
                         >
-                          {membership.status === "ACTIVE"
-                            ? t.memberships.active
-                            : membership.status === "EXPIRED"
-                            ? t.memberships.expired
-                            : membership.status === "SUSPENDED"
-                            ? t.memberships.suspended
-                            : membership.status}
+                          {getMembershipStatusLabel(membership.status)}
                         </span>
                       </td>
                       <td className="table-cell font-semibold text-primary-600">
                         {formatCurrency(membership.price) || "N/A"}
-                      </td>
-                      <td className="table-cell">
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleEdit(membership)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                            title={t.common.edit}
-                          >
-                            <Edit size={18} />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(membership.id)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title={t.common.delete}
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </div>
                       </td>
                     </tr>
                   );

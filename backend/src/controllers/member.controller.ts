@@ -33,7 +33,8 @@ export class MemberController {
   }
 
   static async update(req: Request, res: Response) {
-    const { id, tenant_id } = req.params as any;
+    const { id } = req.params as any;
+    const tenant_id = req.user?.tenant_id;
     const updated = await MemberService.update(
       Number(id),
       Number(tenant_id),

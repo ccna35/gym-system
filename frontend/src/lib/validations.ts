@@ -46,7 +46,6 @@ export const membershipSchema = z.object({
   member_id: z.number().int().positive("Select a member"),
   start_date: z.string().min(1, "Start date is required"),
   price: z.number().min(0, "Price must be non-negative").optional(),
-  status: z.enum(["ACTIVE", "EXPIRED", "SUSPENDED"]),
 });
 
 export const paymentSchema = z.object({
