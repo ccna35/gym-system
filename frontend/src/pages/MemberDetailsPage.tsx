@@ -62,7 +62,9 @@ export default function MemberDetailsPage() {
       {
         onSuccess: () => {
           setSelectedMembership(null);
-          queryClient.invalidateQueries({ queryKey: ["memberDetails", memberId] });
+          queryClient.invalidateQueries({
+            queryKey: ["memberDetails", memberId],
+          });
         },
       }
     );
