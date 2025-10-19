@@ -3,7 +3,18 @@ import type { Member, MemberFormData, ApiResponse } from "../types";
 
 export interface MemberDetails {
   member: Member;
-  memberships: Array<any>; // can be typed more strictly if needed
+  memberships: Array<{
+    id: number;
+    member_id: number;
+    start_date: string;
+    end_date: string | null;
+    price: number;
+    status: "ACTIVE" | "EXPIRED" | "CANCELLED";
+    notes?: string | null;
+    created_by: number;
+    created_at: string;
+    updated_at: string;
+  }>;
   stats: {
     totalPaid: number;
     totalRemaining: number;
