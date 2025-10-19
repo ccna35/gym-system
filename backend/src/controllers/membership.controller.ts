@@ -12,16 +12,17 @@ export class MembershipController {
         tenant_id,
       });
       res.status(201).json({ success: true, data: membership });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as Error;
       res.status(400).json({
         success: false,
-        message: error.message || "Failed to create membership",
+        message: err.message || "Failed to create membership",
       });
     }
   }
 
   static async getById(req: Request, res: Response) {
-    const { id } = req.params as any;
+    const { id } = req.params;
     const tenant_id = req.user?.tenant_id;
     const membership = await MembershipService.getById(
       Number(id),
@@ -42,7 +43,7 @@ export class MembershipController {
   }
 
   static async getAllByMember(req: Request, res: Response) {
-    const { id: member_id } = req.params as any;
+    const { id: member_id } = req.params;
     const tenant_id = req.user?.tenant_id;
     const memberships = await MembershipService.getAllByMember(
       Number(member_id),
@@ -52,7 +53,7 @@ export class MembershipController {
   }
 
   static async update(req: Request, res: Response) {
-    const { id } = req.params as any;
+    const { id } = req.params;
     const tenant_id = req.user?.tenant_id;
     const updated = await MembershipService.update(
       Number(id),
@@ -68,7 +69,7 @@ export class MembershipController {
   }
 
   static async delete(req: Request, res: Response) {
-    const { id, tenant_id } = req.params as any;
+    const { id, tenant_id } = req.params;
     const deleted = await MembershipService.delete(
       Number(id),
       Number(tenant_id)

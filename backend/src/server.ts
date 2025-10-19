@@ -1,6 +1,7 @@
 import app from "./app";
 import { connectDatabase, closePool } from "./db/connection";
 import { MigrationRunner } from "./db/migrations";
+import { Server } from "http";
 
 // Get port from environment variables or use default
 const PORT = process.env.PORT || 3000;
@@ -29,7 +30,7 @@ const startServer = async () => {
 };
 
 // Start the server and store reference
-let server: any;
+let server: Server | undefined;
 startServer()
   .then((serverInstance) => {
     server = serverInstance;
@@ -49,7 +50,7 @@ const gracefulShutdown = async () => {
 
     // Close server
     if (server) {
-      server.close((err: any) => {
+      server.close((err?: Error) => {
         if (err) {
           console.error("❌ Error during shutdown:", err);
           process.exit(1);

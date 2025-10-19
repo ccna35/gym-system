@@ -12,16 +12,17 @@ export class PaymentController {
         created_by,
       });
       res.status(201).json({ success: true, data: payment });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as Error;
       res.status(400).json({
         success: false,
-        message: error.message || "Failed to create payment",
+        message: err.message || "Failed to create payment",
       });
     }
   }
 
   static async getById(req: Request, res: Response) {
-    const { id, tenant_id } = req.params as any;
+    const { id, tenant_id } = req.params;
     const payment = await PaymentService.getById(Number(id), Number(tenant_id));
     if (!payment) {
       return res
@@ -39,23 +40,24 @@ export class PaymentController {
 
   static async getAllByMembership(req: Request, res: Response) {
     try {
-      const { membership_id } = req.params as any;
+      const { membership_id } = req.params;
       const tenant_id = req.user?.tenant_id;
       const payments = await PaymentService.getAllByMembership(
         Number(membership_id),
         Number(tenant_id)
       );
       res.json({ success: true, data: payments });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as Error;
       res.status(400).json({
         success: false,
-        message: error.message || "Failed to retrieve payments",
+        message: err.message || "Failed to retrieve payments",
       });
     }
   }
 
   static async delete(req: Request, res: Response) {
-    const { id, tenant_id } = req.params as any;
+    const { id, tenant_id } = req.params;
     const deleted = await PaymentService.delete(Number(id), Number(tenant_id));
     if (!deleted) {
       return res.status(404).json({

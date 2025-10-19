@@ -37,8 +37,9 @@ export const useCreatePlan = () => {
       queryClient.invalidateQueries({ queryKey: ["plans"] });
       toast.success("Plan created successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Failed to create plan");
+    onError: (error: Error) => {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || "Failed to create plan");
     },
   });
 };
@@ -54,8 +55,9 @@ export const useUpdatePlan = () => {
       queryClient.invalidateQueries({ queryKey: ["plans"] });
       toast.success("Plan updated successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Failed to update plan");
+    onError: (error: Error) => {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || "Failed to update plan");
     },
   });
 };
@@ -70,8 +72,9 @@ export const useDeletePlan = () => {
       queryClient.invalidateQueries({ queryKey: ["plans"] });
       toast.success("Plan deleted successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Failed to delete plan");
+    onError: (error: Error) => {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || "Failed to delete plan");
     },
   });
 };

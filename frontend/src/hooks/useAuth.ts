@@ -16,8 +16,9 @@ export const useLogin = () => {
       toast.success("Login successful!");
       navigate("/dashboard");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Login failed");
+    onError: (error: Error) => {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || "Login failed");
     },
   });
 };
@@ -33,8 +34,9 @@ export const useRegister = () => {
       toast.success("Registration successful!");
       navigate("/dashboard");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Registration failed");
+    onError: (error: Error) => {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || "Registration failed");
     },
   });
 };

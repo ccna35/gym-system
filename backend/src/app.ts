@@ -124,7 +124,7 @@ app.get("/api/version", (req, res) => {
 // Global error handler
 app.use(
   (
-    err: any,
+    err: Error & { status?: number },
     req: express.Request,
     res: express.Response,
     next: express.NextFunction

@@ -37,8 +37,9 @@ export const useCreateMember = () => {
       queryClient.invalidateQueries({ queryKey: ["members"] });
       toast.success("Member created successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Failed to create member");
+    onError: (error: Error) => {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || "Failed to create member");
     },
   });
 };
@@ -53,8 +54,9 @@ export const useUpdateMember = () => {
       queryClient.invalidateQueries({ queryKey: ["members"] });
       toast.success("Member updated successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Failed to update member");
+    onError: (error: Error) => {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || "Failed to update member");
     },
   });
 };
@@ -69,8 +71,9 @@ export const useDeleteMember = () => {
       queryClient.invalidateQueries({ queryKey: ["members"] });
       toast.success("Member deleted successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Failed to delete member");
+    onError: (error: Error) => {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || "Failed to delete member");
     },
   });
 };

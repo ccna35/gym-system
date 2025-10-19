@@ -7,16 +7,17 @@ export class MemberController {
       const tenant_id = req.user?.tenant_id;
       const member = await MemberService.create({ ...req.body, tenant_id });
       res.status(201).json({ success: true, data: member });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as Error;
       res.status(400).json({
         success: false,
-        message: error.message || "Failed to create member",
+        message: err.message || "Failed to create member",
       });
     }
   }
 
   static async getById(req: Request, res: Response) {
-    const { id, tenant_id } = req.params as any;
+    const { id, tenant_id } = req.params;
     const member = await MemberService.getById(Number(id), Number(tenant_id));
     if (!member) {
       return res
@@ -33,7 +34,7 @@ export class MemberController {
   }
 
   static async update(req: Request, res: Response) {
-    const { id } = req.params as any;
+    const { id } = req.params;
     const tenant_id = req.user?.tenant_id;
     const updated = await MemberService.update(
       Number(id),
@@ -49,7 +50,7 @@ export class MemberController {
   }
 
   static async delete(req: Request, res: Response) {
-    const { id, tenant_id } = req.params as any;
+    const { id, tenant_id } = req.params;
     const deleted = await MemberService.delete(Number(id), Number(tenant_id));
     if (!deleted) {
       return res.status(404).json({

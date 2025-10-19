@@ -1,7 +1,8 @@
-import bcrypt from "bcryptjs";
-import jwt, { SignOptions } from "jsonwebtoken";
+import * as bcrypt from "bcryptjs";
+import jwt, { SignOptions, JwtPayload } from "jsonwebtoken";
 import { executeQuery } from "../db/connection";
 import { IUser, UserModel } from "../models/User";
+import { ResultSetHeader } from "mysql2";
 
 export interface RegisterInput {
   tenant_id: number;
@@ -47,24 +48,25 @@ export class AuthService {
     const salt = await bcrypt.genSalt(10);
     const hashed = await bcrypt.hash(input.password, salt);
 
-    let result: any;
+    let result: ResultSetHeader;
     try {
-      result = await executeQuery(UserModel.INSERT_USER, [
+      result = (await executeQuery(UserModel.INSERT_USER, [
         input.tenant_id,
         input.full_name,
         input.email,
         input.phone ?? null,
         hashed,
         input.role_id,
-      ]);
-    } catch (e: any) {
-      if (e && e.code === "ER_BAD_FIELD_ERROR") {
+      ])) as ResultSetHeader;
+    } catch (e: unknown) {
+      const error = e as { code?: string };
+      if (error && error.code === "ER_BAD_FIELD_ERROR") {
         // Database schema mismatch (old users table). Surface a clear message.
         throw new Error(
           "Users table schema is outdated. Run migrations on a fresh DB or migrate existing table to multi-tenant schema."
         );
       }
-      if (e && e.code === "ER_DUP_ENTRY") {
+      if (error && error.code === "ER_DUP_ENTRY") {
         throw new Error("Email or phone already registered for this tenant");
       }
       throw e;
@@ -104,9 +106,9 @@ export class AuthService {
   static signToken(user: Omit<IUser, "password_hash">): string {
     const payload = {
       sub: user.id,
-      tenant_id: (user as any).tenant_id,
+      tenant_id: user.tenant_id,
       email: user.email,
-      role_id: (user as any).role_id,
+      role_id: user.role_id,
     };
     const options: SignOptions = {
       expiresIn: JWT_EXPIRES_IN as SignOptions["expiresIn"],
@@ -114,13 +116,13 @@ export class AuthService {
     return jwt.sign(payload, JWT_SECRET as jwt.Secret, options);
   }
 
-  static verifyToken(token: string): any {
+  static verifyToken(token: string): JwtPayload | string {
     return jwt.verify(token, JWT_SECRET);
   }
 
   static omitPasswordHash(user: IUser): Omit<IUser, "password_hash"> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password_hash, ...rest } = user as any;
+    const { password_hash, ...rest } = user;
     return rest;
   }
 }

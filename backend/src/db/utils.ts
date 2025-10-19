@@ -1,4 +1,5 @@
 import { executeQuery } from "./connection";
+import { RowDataPacket } from "mysql2";
 
 // Test database connection with a simple query
 export const testDatabaseConnection = async (): Promise<boolean> => {
@@ -15,13 +16,17 @@ export const testDatabaseConnection = async (): Promise<boolean> => {
 // Get database version
 export const getDatabaseInfo = async () => {
   try {
-    const versionResult = await executeQuery("SELECT VERSION() as version");
-    const tablesResult = await executeQuery("SHOW TABLES");
+    const versionResult = (await executeQuery(
+      "SELECT VERSION() as version"
+    )) as RowDataPacket[];
+    const tablesResult = (await executeQuery("SHOW TABLES")) as RowDataPacket[];
 
     return {
       version: versionResult[0]?.version || "Unknown",
       tables: tablesResult.length || 0,
-      tablesNames: tablesResult.map((row: any) => Object.values(row)[0]),
+      tablesNames: tablesResult.map(
+        (row: RowDataPacket) => Object.values(row)[0]
+      ),
     };
   } catch (error) {
     console.error("❌ Failed to get database info:", error);

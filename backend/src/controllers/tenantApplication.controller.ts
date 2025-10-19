@@ -33,13 +33,14 @@ export class TenantApplicationController {
         message: "Tenant application created successfully",
         data: application,
       });
-    } catch (error: any) {
-      console.error("Error creating tenant application:", error);
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Error creating tenant application:", err);
 
-      if (error.message.includes("already exists")) {
+      if (err.message.includes("already exists")) {
         res.status(409).json({
           success: false,
-          message: error.message,
+          message: err.message,
         });
       } else {
         res.status(500).json({
