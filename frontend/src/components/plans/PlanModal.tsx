@@ -5,7 +5,6 @@ import { X, Loader2 } from "lucide-react";
 import { planSchema, type PlanFormData } from "../../lib/validations";
 import { useCreatePlan, useUpdatePlan } from "../../hooks/usePlans";
 import type { Plan } from "../../types";
-import { useAuthStore } from "../../store/authStore";
 import { t } from "../../i18n";
 
 interface PlanModalProps {
@@ -15,7 +14,6 @@ interface PlanModalProps {
 }
 
 export const PlanModal = ({ isOpen, onClose, plan }: PlanModalProps) => {
-  const tenantId = useAuthStore((state) => state.user?.tenant_id);
   const createPlan = useCreatePlan();
   const updatePlan = useUpdatePlan();
 
@@ -33,8 +31,6 @@ export const PlanModal = ({ isOpen, onClose, plan }: PlanModalProps) => {
       reset({
         name: plan.name,
         description: plan.description || "",
-        duration_months: plan.duration_months,
-        price: plan.price,
       });
     } else {
       reset({
@@ -53,10 +49,7 @@ export const PlanModal = ({ isOpen, onClose, plan }: PlanModalProps) => {
         data,
       });
     } else {
-      await createPlan.mutateAsync({
-        ...data,
-        tenant_id: tenantId!,
-      } as any);
+      await createPlan.mutateAsync(data);
     }
     onClose();
     reset();

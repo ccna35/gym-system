@@ -1,13 +1,6 @@
 import { useState } from "react";
 import { usePayments, useDeletePayment } from "../hooks/usePayments";
-import {
-  Plus,
-  Trash2,
-  Loader2,
-  DollarSign,
-  CreditCard,
-  Calendar,
-} from "lucide-react";
+import { Plus, Trash2, Loader2, DollarSign } from "lucide-react";
 import { formatCurrency, formatDateTime } from "../lib/utils";
 import { PaymentModal } from "../components/payments/PaymentModal";
 import { t } from "../i18n";
@@ -32,13 +25,6 @@ export const PaymentsPage = () => {
     (sum, payment) => sum + Number(payment.amount),
     0
   );
-
-  // Calculate payments by method
-  const cashPayments = payments?.filter((p) => p.method === "CASH").length;
-  const cardPayments = payments?.filter((p) => p.method === "CARD").length;
-  const bankPayments = payments?.filter(
-    (p) => p.method === "BANK_TRANSFER"
-  ).length;
 
   // Get payment status color
   const getStatusColor = (status: string) => {
