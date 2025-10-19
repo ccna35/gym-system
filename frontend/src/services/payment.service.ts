@@ -37,4 +37,15 @@ export const paymentApi = {
       params: { tenant_id: tenantId },
     });
   },
+
+  updateStatus: async (
+    id: number,
+    status: "PAID" | "VOID"
+  ): Promise<Payment> => {
+    const response = await axiosInstance.patch<ApiResponse<Payment>>(
+      `/payments/${id}/status`,
+      { status }
+    );
+    return response.data.data;
+  },
 };

@@ -9,8 +9,10 @@ import {
   LogOut,
   Menu,
   X,
+  Dumbbell,
 } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { t } from "../i18n";
 
 export const DashboardLayout = () => {
@@ -51,13 +53,22 @@ export const DashboardLayout = () => {
       >
         <div className="flex flex-col h-full border-l border-gray-200">
           {/* Logo */}
-          <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
-            <h1 className="text-xl font-bold text-primary-600">
-              نظام الصالة الرياضية
-            </h1>
-            <button onClick={() => setSidebarOpen(false)} className="lg:hidden">
+          <div className="flex items-center justify-center h-16 px-6 border-b border-gray-200">
+            <div className="flex items-center gap-2">
+              <Dumbbell
+                className="w-8 h-8 text-primary-600"
+                strokeWidth={2.5}
+              />
+              <span className="text-2xl font-bold text-primary-600">GYM</span>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden absolute left-4"
+            >
               <X size={24} />
-            </button>
+            </Button>
           </div>
 
           {/* Navigation */}
@@ -69,7 +80,7 @@ export const DashboardLayout = () => {
                 className="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-primary-50 hover:text-primary-700 transition-colors"
                 onClick={() => setSidebarOpen(false)}
               >
-                <item.icon size={20} className="ml-3" />
+                <item.icon size={20} className="mr-3" />
                 {item.name}
               </Link>
             ))}
@@ -83,20 +94,21 @@ export const DashboardLayout = () => {
                   {user?.full_name?.charAt(0).toUpperCase()}
                 </span>
               </div>
-              <div className="ml-3 flex-1 min-w-0">
+              <div className="mr-3 flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate">
                   {user?.full_name}
                 </p>
                 <p className="text-xs text-gray-500 truncate">{user?.email}</p>
               </div>
             </div>
-            <button
+            <Button
               onClick={handleLogout}
-              className="flex items-center w-full px-4 py-2 text-sm text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+              variant="destructive"
+              className="flex items-center w-full px-4 py-2 text-sm"
             >
               <LogOut size={18} className="ml-2" />
               {t.nav.logout}
-            </button>
+            </Button>
           </div>
         </div>
       </aside>
@@ -105,9 +117,14 @@ export const DashboardLayout = () => {
       <div className="lg:pr-64">
         {/* Top bar */}
         <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-6 bg-white border-b border-gray-200">
-          <button onClick={() => setSidebarOpen(true)} className="lg:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSidebarOpen(true)}
+            className="lg:hidden"
+          >
             <Menu size={24} />
-          </button>
+          </Button>
           <div className="flex-1" />
         </header>
 

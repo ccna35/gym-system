@@ -2,6 +2,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { memberApi } from "../services/member.service";
 import { useAuthStore } from "../store/authStore";
 import type { MemberFormData } from "../types";
+
+import type { MemberDetails } from "../services/member.service";
 import { toast } from "../lib/toast";
 
 export const useMembers = () => {
@@ -58,6 +60,17 @@ export const useUpdateMember = () => {
       const err = error as { response?: { data?: { message?: string } } };
       toast.error(err.response?.data?.message || "Failed to update member");
     },
+  });
+};
+
+// New: Hook to fetch member details (info, memberships, payments, stats)
+export const useMemberDetails = (id: number) => {
+  return useQuery<MemberDetails>({
+    queryKey: ["memberDetails", id],
+    queryFn: () => memberApi.getDetails(id),
+    enabled: !!id,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 };
 

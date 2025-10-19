@@ -6,6 +6,9 @@ import { memberSchema, type MemberFormData } from "../../lib/validations";
 import { useCreateMember, useUpdateMember } from "../../hooks/useMembers";
 import type { Member } from "../../types";
 import { t } from "../../i18n";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface MemberModalProps {
   isOpen: boolean;
@@ -89,12 +92,14 @@ export const MemberModal = ({ isOpen, onClose, member }: MemberModalProps) => {
             <h3 className="text-2xl font-bold text-gray-900">
               {member ? t.members.editMember : t.members.newMember}
             </h3>
-            <button
+            <Button
               onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
+              variant="ghost"
+              size="icon"
+              className="text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
             >
               <X size={24} />
-            </button>
+            </Button>
           </div>
 
           {/* Form */}
@@ -102,15 +107,8 @@ export const MemberModal = ({ isOpen, onClose, member }: MemberModalProps) => {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {/* Full Name */}
               <div className="sm:col-span-2">
-                <label htmlFor="full_name" className="label">
-                  {t.members.fullName} *
-                </label>
-                <input
-                  id="full_name"
-                  type="text"
-                  className="input"
-                  {...register("full_name")}
-                />
+                <Label htmlFor="full_name">{t.members.fullName} *</Label>
+                <Input id="full_name" type="text" {...register("full_name")} />
                 {errors.full_name && (
                   <p className="error-message">{errors.full_name.message}</p>
                 )}
@@ -118,15 +116,8 @@ export const MemberModal = ({ isOpen, onClose, member }: MemberModalProps) => {
 
               {/* Email */}
               <div>
-                <label htmlFor="email" className="label">
-                  {t.members.email}
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  className="input"
-                  {...register("email")}
-                />
+                <Label htmlFor="email">{t.members.email}</Label>
+                <Input id="email" type="email" {...register("email")} />
                 {errors.email && (
                   <p className="error-message">{errors.email.message}</p>
                 )}
@@ -134,15 +125,8 @@ export const MemberModal = ({ isOpen, onClose, member }: MemberModalProps) => {
 
               {/* Phone */}
               <div>
-                <label htmlFor="phone" className="label">
-                  {t.members.phone}
-                </label>
-                <input
-                  id="phone"
-                  type="tel"
-                  className="input"
-                  {...register("phone")}
-                />
+                <Label htmlFor="phone">{t.members.phone}</Label>
+                <Input id="phone" type="tel" {...register("phone")} />
                 {errors.phone && (
                   <p className="error-message">{errors.phone.message}</p>
                 )}
@@ -150,15 +134,8 @@ export const MemberModal = ({ isOpen, onClose, member }: MemberModalProps) => {
 
               {/* Date of Birth */}
               <div>
-                <label htmlFor="dob" className="label">
-                  {t.members.dateOfBirth}
-                </label>
-                <input
-                  id="dob"
-                  type="date"
-                  className="input"
-                  {...register("dob")}
-                />
+                <Label htmlFor="dob">{t.members.dateOfBirth}</Label>
+                <Input id="dob" type="date" {...register("dob")} />
                 {errors.dob && (
                   <p className="error-message">{errors.dob.message}</p>
                 )}
@@ -166,9 +143,7 @@ export const MemberModal = ({ isOpen, onClose, member }: MemberModalProps) => {
 
               {/* Status */}
               <div>
-                <label htmlFor="status" className="label">
-                  {t.common.status} *
-                </label>
+                <Label htmlFor="status">{t.common.status} *</Label>
                 <select id="status" className="input" {...register("status")}>
                   <option value="ACTIVE">{t.memberships.active}</option>
                   <option value="EXPIRED">{t.memberships.expired}</option>
@@ -181,13 +156,12 @@ export const MemberModal = ({ isOpen, onClose, member }: MemberModalProps) => {
 
               {/* Emergency Contact */}
               <div className="sm:col-span-2">
-                <label htmlFor="emergency_contact" className="label">
+                <Label htmlFor="emergency_contact">
                   {t.members.emergencyContact}
-                </label>
-                <input
+                </Label>
+                <Input
                   id="emergency_contact"
                   type="text"
-                  className="input"
                   {...register("emergency_contact")}
                 />
                 {errors.emergency_contact && (
@@ -199,9 +173,7 @@ export const MemberModal = ({ isOpen, onClose, member }: MemberModalProps) => {
 
               {/* Medical Notes */}
               <div className="sm:col-span-2">
-                <label htmlFor="medical_notes" className="label">
-                  {t.members.medicalNotes}
-                </label>
+                <Label htmlFor="medical_notes">{t.members.medicalNotes}</Label>
                 <textarea
                   id="medical_notes"
                   rows={3}
@@ -217,13 +189,10 @@ export const MemberModal = ({ isOpen, onClose, member }: MemberModalProps) => {
 
               {/* Photo URL */}
               <div className="sm:col-span-2">
-                <label htmlFor="photo_url" className="label">
-                  {t.members.photoUrl}
-                </label>
-                <input
+                <Label htmlFor="photo_url">{t.members.photoUrl}</Label>
+                <Input
                   id="photo_url"
                   type="url"
-                  className="input"
                   placeholder="https://example.com/photo.jpg"
                   {...register("photo_url")}
                 />
@@ -235,17 +204,17 @@ export const MemberModal = ({ isOpen, onClose, member }: MemberModalProps) => {
 
             {/* Actions */}
             <div className="flex justify-end gap-3 pt-4 border-t">
-              <button
+              <Button
                 type="button"
                 onClick={onClose}
-                className="btn btn-secondary"
+                variant="secondary"
                 disabled={isPending}
               >
                 {t.common.cancel}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
-                className="btn btn-primary flex items-center"
+                className="flex items-center"
                 disabled={isPending}
               >
                 {isPending ? (
@@ -259,7 +228,7 @@ export const MemberModal = ({ isOpen, onClose, member }: MemberModalProps) => {
                     {t.members.title.slice(0, -1)}
                   </>
                 )}
-              </button>
+              </Button>
             </div>
           </form>
         </div>

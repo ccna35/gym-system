@@ -134,6 +134,6 @@ export interface PaymentFormData {
   membership_id: number;
   amount: number;
   payment_date: string;
-  payment_method: "CASH" | "CARD" | "BANK_TRANSFER";
+  method?: "CASH" | "CARD" | "BANK_TRANSFER";
   notes?: string;
 }

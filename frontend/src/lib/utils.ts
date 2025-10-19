@@ -1,4 +1,4 @@
-import { type ClassValue, clsx } from "clsx";
+import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -39,22 +39,20 @@ export function calculateEndDate(
   return date.toISOString().split("T")[0];
 }
 
-export function getStatusColor(status: string): string {
+export function getMembershipStatusColor(status: string): string {
   switch (status) {
     case "ACTIVE":
       return "bg-green-100 text-green-800";
-    case "EXPIRED":
-      return "bg-red-100 text-red-800";
     case "EXPIRING_SOON":
       return "bg-yellow-100 text-yellow-800";
-    case "SUSPENDED":
-      return "bg-yellow-100 text-yellow-800";
+    case "EXPIRED":
+      return "bg-red-100 text-red-800";
     default:
       return "bg-gray-100 text-gray-800";
   }
 }
 
-export function getMembershipStatusColor(status: string): string {
+export function getStatusColor(status: string): string {
   switch (status) {
     case "ACTIVE":
       return "bg-green-100 text-green-800";

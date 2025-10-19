@@ -67,4 +67,40 @@ export class PaymentController {
     }
     res.json({ success: true, message: "Payment deleted" });
   }
+
+  static async updateStatus(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      const tenant_id = req.user?.tenant_id;
+
+      if (!status || !["PAID", "VOID"].includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid status. Must be PAID or VOID",
+        });
+      }
+
+      const payment = await PaymentService.updateStatus(
+        Number(id),
+        Number(tenant_id),
+        status
+      );
+
+      if (!payment) {
+        return res.status(404).json({
+          success: false,
+          message: "Payment not found",
+        });
+      }
+
+      res.json({ success: true, data: payment });
+    } catch (error: unknown) {
+      const err = error as Error;
+      res.status(400).json({
+        success: false,
+        message: err.message || "Failed to update payment status",
+      });
+    }
+  }
 }

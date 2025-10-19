@@ -80,3 +80,26 @@ export const useDeletePayment = () => {
     },
   });
 };
+
+export const useUpdatePaymentStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, status }: { id: number; status: "PAID" | "VOID" }) =>
+      paymentApi.updateStatus(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["payments"] });
+      queryClient.invalidateQueries({ queryKey: ["members"] });
+      queryClient.invalidateQueries({ queryKey: ["member"] });
+      toast.success("تم تحديث حالة الدفعة بنجاح!");
+    },
+    onError: (error: unknown) => {
+      let msg = "فشل تحديث حالة الدفعة";
+      if (typeof error === "object" && error !== null) {
+        // @ts-expect-error: error may have response/message from API
+        msg = error?.response?.data?.message || error?.message || msg;
+      }
+      toast.error(msg);
+    },
+  });
+};

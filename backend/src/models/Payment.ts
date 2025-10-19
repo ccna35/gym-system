@@ -48,7 +48,17 @@ export class PaymentModel {
   `;
 
   static readonly SELECT_BY_MEMBERSHIP = `
-    SELECT * FROM payments WHERE membership_id = ? AND tenant_id = ? ORDER BY created_at DESC
+    SELECT * FROM payments
+    WHERE 
+    membership_id = ? 
+    AND payments.status = 'PAID'
+    AND
+    tenant_id = ? 
+    ORDER BY created_at DESC
+  `;
+
+  static readonly UPDATE_STATUS_QUERY = `
+    UPDATE payments SET status = ? WHERE id = ? AND tenant_id = ?
   `;
 
   static readonly DELETE_QUERY = `

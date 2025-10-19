@@ -23,7 +23,7 @@ export class MembershipService {
       input.start_date,
       input.start_date,
       input.price * 100, // Store price in cents
-      input.status ?? "PENDING",
+      input.status ?? "ACTIVE",
       input.notes ?? null,
       input.created_by,
     ]);

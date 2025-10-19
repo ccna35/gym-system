@@ -5,6 +5,9 @@ import { registerSchema, type RegisterFormData } from "../lib/validations";
 import { useRegister } from "../hooks/useAuth";
 import { Loader2 } from "lucide-react";
 import { t } from "../i18n";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export const RegisterPage = () => {
   const {
@@ -43,13 +46,10 @@ export const RegisterPage = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Tenant ID */}
             <div>
-              <label htmlFor="tenant_id" className="label">
-                Tenant ID
-              </label>
-              <input
+              <Label htmlFor="tenant_id">Tenant ID</Label>
+              <Input
                 id="tenant_id"
                 type="number"
-                className="input"
                 {...register("tenant_id", { valueAsNumber: true })}
               />
               {errors.tenant_id && (
@@ -59,13 +59,10 @@ export const RegisterPage = () => {
 
             {/* Full Name */}
             <div>
-              <label htmlFor="full_name" className="label">
-                {t.auth.name}
-              </label>
-              <input
+              <Label htmlFor="full_name">{t.auth.name}</Label>
+              <Input
                 id="full_name"
                 type="text"
-                className="input"
                 placeholder="John Doe"
                 {...register("full_name")}
               />
@@ -76,14 +73,11 @@ export const RegisterPage = () => {
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="label">
-                {t.auth.email}
-              </label>
-              <input
+              <Label htmlFor="email">{t.auth.email}</Label>
+              <Input
                 id="email"
                 type="email"
                 autoComplete="email"
-                className="input"
                 placeholder="you@example.com"
                 {...register("email")}
               />
@@ -94,13 +88,10 @@ export const RegisterPage = () => {
 
             {/* Phone */}
             <div>
-              <label htmlFor="phone" className="label">
-                {t.members.phone} (Optional)
-              </label>
-              <input
+              <Label htmlFor="phone">{t.members.phone} (Optional)</Label>
+              <Input
                 id="phone"
                 type="tel"
-                className="input"
                 placeholder="+1234567890"
                 {...register("phone")}
               />
@@ -111,14 +102,11 @@ export const RegisterPage = () => {
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="label">
-                {t.auth.password}
-              </label>
-              <input
+              <Label htmlFor="password">{t.auth.password}</Label>
+              <Input
                 id="password"
                 type="password"
                 autoComplete="new-password"
-                className="input"
                 placeholder="••••••••"
                 {...register("password")}
               />
@@ -129,14 +117,11 @@ export const RegisterPage = () => {
 
             {/* Confirm Password */}
             <div>
-              <label htmlFor="confirmPassword" className="label">
-                تأكيد كلمة المرور
-              </label>
-              <input
+              <Label htmlFor="confirmPassword">تأكيد كلمة المرور</Label>
+              <Input
                 id="confirmPassword"
                 type="password"
                 autoComplete="new-password"
-                className="input"
                 placeholder="••••••••"
                 {...register("confirmPassword")}
               />
@@ -154,10 +139,10 @@ export const RegisterPage = () => {
             />
 
             {/* Submit Button */}
-            <button
+            <Button
               type="submit"
+              className="w-full flex items-center justify-center"
               disabled={registerMutation.isPending}
-              className="w-full btn btn-primary flex items-center justify-center"
             >
               {registerMutation.isPending ? (
                 <>
@@ -167,7 +152,7 @@ export const RegisterPage = () => {
               ) : (
                 t.auth.signUp
               )}
-            </button>
+            </Button>
           </form>
 
           {/* Login Link */}

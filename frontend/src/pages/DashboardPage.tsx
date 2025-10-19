@@ -1,35 +1,53 @@
 import { useMembers } from "../hooks/useMembers";
 import { usePlans } from "../hooks/usePlans";
-import { Users, CreditCard, TrendingUp, DollarSign } from "lucide-react";
+import {
+  Users,
+  TrendingUp,
+  DollarSign,
+  Clock,
+  AlertTriangle,
+} from "lucide-react";
 import { t } from "../i18n";
+import { useDashboardSummary } from "../hooks/useDashboard";
+import { Link } from "react-router-dom";
 
 export const DashboardPage = () => {
   const { data: members } = useMembers();
   const { data: plans } = usePlans();
+  const { data: summary } = useDashboardSummary();
 
   const activeMembers =
     members?.filter((m) => m.status === "ACTIVE").length || 0;
   const totalMembers = members?.length || 0;
-  const totalPlans = plans?.length || 0;
+  // const totalPlans = plans?.length || 0;
 
   const stats = [
     {
       title: t.dashboard.totalMembers,
-      value: totalMembers,
+      value: summary?.total_members ?? totalMembers,
       icon: Users,
       color: "bg-blue-500",
     },
     {
       title: t.dashboard.activeMembers,
-      value: activeMembers,
+      value: summary?.active_members ?? activeMembers,
       icon: TrendingUp,
       color: "bg-green-500",
+      link: "/members?status=ACTIVE",
     },
     {
-      title: t.dashboard.activePlans,
-      value: totalPlans,
-      icon: CreditCard,
-      color: "bg-purple-500",
+      title: t.memberships.expiringSoon,
+      value: summary?.expiring_soon_members ?? 0,
+      icon: Clock,
+      color: "bg-orange-500",
+      link: "/members?status=EXPIRING_SOON",
+    },
+    {
+      title: t.memberships.expired,
+      value: summary?.expired_members ?? 0,
+      icon: AlertTriangle,
+      color: "bg-red-500",
+      link: "/members?status=EXPIRED",
     },
     {
       title: t.dashboard.totalRevenue,
@@ -66,6 +84,16 @@ export const DashboardPage = () => {
                 <stat.icon className="text-white" size={24} />
               </div>
             </div>
+            {stat.link && (
+              <div className="mt-3 text-left">
+                <Link
+                  to={stat.link}
+                  className="text-primary-600 hover:underline"
+                >
+                  {t.dashboard.viewAll}
+                </Link>
+              </div>
+            )}
           </div>
         ))}
       </div>
