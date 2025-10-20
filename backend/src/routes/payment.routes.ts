@@ -13,6 +13,9 @@ const router = Router();
 // All routes require authentication
 router.use(requireAuth);
 
+// total-revenue
+router.get("/total-revenue", PaymentController.getTotalRevenue);
+
 router.post(
   "/",
   validate({ body: createPaymentSchema }),

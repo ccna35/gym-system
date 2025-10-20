@@ -23,6 +23,7 @@ export interface Member {
   photo_url?: string | null;
   status: "ACTIVE" | "EXPIRED" | "SUSPENDED";
   membership_status: "ACTIVE" | "EXPIRING_SOON" | "EXPIRED";
+  expiration_date?: string | null;
   remaining_amount: string;
   created_at: string;
   updated_at: string;

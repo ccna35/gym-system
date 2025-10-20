@@ -2,7 +2,6 @@ import Joi from "joi";
 import { MemberStatus } from "../models/Member";
 
 export const createMemberSchema = Joi.object({
-  tenant_id: Joi.number().integer().positive().required(),
   full_name: Joi.string().max(120).trim().required(),
   email: Joi.string()
     .email({ tlds: { allow: false } })

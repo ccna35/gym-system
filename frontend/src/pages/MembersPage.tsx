@@ -129,6 +129,10 @@ export const MembersPage = () => {
                 <th className="table-header text-right">
                   {t.members.joinDate}
                 </th>
+                {/* Expiration date */}
+                <th className="table-header text-right">
+                  {t.members.expirationDate}
+                </th>
                 <th className="table-header text-right">
                   {t.members.remainingAmount}
                 </th>
@@ -168,6 +172,12 @@ export const MembersPage = () => {
                     </td>
                     <td className="table-cell text-gray-500">
                       {formatDate(member.created_at)}
+                    </td>
+                    {/* Expiration date cell */}
+                    <td className="table-cell text-gray-500">
+                      {member.expiration_date
+                        ? formatDate(member.expiration_date)
+                        : "N/A"}
                     </td>
                     <td className="table-cell text-gray-500">
                       {parseFloat(member.remaining_amount).toLocaleString(

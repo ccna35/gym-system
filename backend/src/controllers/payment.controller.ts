@@ -35,7 +35,26 @@ export class PaymentController {
   static async getAll(req: Request, res: Response) {
     const tenant_id = req.user?.tenant_id;
     const payments = await PaymentService.getAll(Number(tenant_id));
+
     res.json({ success: true, data: payments });
+  }
+
+  static async getTotalRevenue(req: Request, res: Response) {
+    try {
+      const tenant_id = req.user?.tenant_id;
+      const totalRevenue = await PaymentService.getTotalRevenue(
+        Number(tenant_id)
+      );
+      console.log("totalRevenue", totalRevenue);
+
+      res.json({ success: true, data: { totalRevenue } });
+    } catch (error: unknown) {
+      const err = error as Error;
+      res.status(400).json({
+        success: false,
+        message: err.message || "Failed to retrieve total revenue",
+      });
+    }
   }
 
   static async getAllByMembership(req: Request, res: Response) {

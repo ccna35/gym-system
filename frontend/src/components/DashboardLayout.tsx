@@ -1,4 +1,4 @@
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import {
   LayoutDashboard,
@@ -19,6 +19,7 @@ export const DashboardLayout = () => {
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => {
@@ -73,17 +74,24 @@ export const DashboardLayout = () => {
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-primary-50 hover:text-primary-700 transition-colors"
-                onClick={() => setSidebarOpen(false)}
-              >
-                <item.icon size={20} className="mr-3" />
-                {item.name}
-              </Link>
-            ))}
+            {navigation.map((item) => {
+              const isActive = location.pathname === item.href;
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
+                    isActive
+                      ? "bg-primary-100 text-primary-700 font-semibold"
+                      : "text-gray-700 hover:bg-primary-50 hover:text-primary-700"
+                  }`}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <item.icon size={20} className="mr-3" />
+                  {item.name}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* User info */}

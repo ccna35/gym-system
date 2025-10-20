@@ -3,6 +3,7 @@ import {
   usePayments,
   useDeletePayment,
   useUpdatePaymentStatus,
+  useTotalRevenue,
 } from "../hooks/usePayments";
 import { Trash2, Loader2, DollarSign, Ban, CheckCircle } from "lucide-react";
 import { formatCurrency, formatDateTime } from "../lib/utils";
@@ -12,6 +13,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export const PaymentsPage = () => {
   const { data: payments, isLoading } = usePayments();
+  const { data: totalRevenue } = useTotalRevenue();
   const deletePayment = useDeletePayment();
   const updatePaymentStatus = useUpdatePaymentStatus();
 
@@ -49,12 +51,6 @@ export const PaymentsPage = () => {
       });
     }
   };
-
-  // Calculate total revenue
-  const totalRevenue = payments?.reduce(
-    (sum, payment) => sum + Number(payment.amount),
-    0
-  );
 
   // Get payment status color
   const getStatusColor = (status: string) => {

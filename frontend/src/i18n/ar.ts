@@ -82,6 +82,7 @@ export const ar = {
     deleteConfirm: "هل أنت متأكد من حذف هذا العضو؟",
     remainingAmount: "المبلغ المتبقي",
     membershipStatus: "حالة الاشتراك",
+    expirationDate: "تاريخ الانتهاء",
   },
 
   // Plans

@@ -5,6 +5,7 @@ export interface DashboardSummary {
   active_members: number;
   expiring_soon_members: number;
   expired_members: number;
+  totalRevenue?: number;
 }
 
 export const dashboardApi = {

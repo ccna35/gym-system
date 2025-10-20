@@ -2,6 +2,12 @@ import axiosInstance from "../lib/axios";
 import type { Payment, PaymentFormData, ApiResponse } from "../types";
 
 export const paymentApi = {
+  getTotalRevenue: async (): Promise<number> => {
+    const response = await axiosInstance.get<
+      ApiResponse<{ totalRevenue: number }>
+    >(`/payments/total-revenue`);
+    return response.data.data.totalRevenue;
+  },
   getAll: async (): Promise<Payment[]> => {
     const response = await axiosInstance.get<ApiResponse<Payment[]>>(
       `/payments`

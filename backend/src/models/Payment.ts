@@ -57,6 +57,14 @@ export class PaymentModel {
     ORDER BY created_at DESC
   `;
 
+  static readonly TOTAL_REVENUE_QUERY = `
+    SELECT 
+      FORMAT(COALESCE(SUM(amount_cents) / 100, 0), 2)
+    AS total_revenue
+    FROM payments
+    WHERE tenant_id = ? AND status = 'PAID'
+  `;
+
   static readonly UPDATE_STATUS_QUERY = `
     UPDATE payments SET status = ? WHERE id = ? AND tenant_id = ?
   `;

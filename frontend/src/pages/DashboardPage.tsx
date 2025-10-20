@@ -19,7 +19,6 @@ export const DashboardPage = () => {
   const activeMembers =
     members?.filter((m) => m.status === "ACTIVE").length || 0;
   const totalMembers = members?.length || 0;
-  // const totalPlans = plans?.length || 0;
 
   const stats = [
     {
@@ -51,7 +50,7 @@ export const DashboardPage = () => {
     },
     {
       title: t.dashboard.totalRevenue,
-      value: "$0",
+      value: summary?.totalRevenue ? `$${summary.totalRevenue}` : "$0.00",
       icon: DollarSign,
       color: "bg-yellow-500",
     },

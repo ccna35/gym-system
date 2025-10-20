@@ -65,7 +65,8 @@ export class MemberModel {
         WHEN MAX(ms.end_date) < NOW() THEN 'EXPIRED'
         WHEN MAX(ms.end_date) <= DATE_ADD(NOW(), INTERVAL 7 DAY) THEN 'EXPIRING_SOON'
         ELSE 'ACTIVE'
-    END AS membership_status
+    END AS membership_status,
+    MAX(ms.end_date) AS expiration_date
 FROM members m
 LEFT JOIN memberships ms ON m.id = ms.member_id 
     AND ms.tenant_id = m.tenant_id 

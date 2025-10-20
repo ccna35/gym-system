@@ -56,6 +56,13 @@ export class PaymentService {
     return rows as IPayment[];
   }
 
+  static async getTotalRevenue(tenant_id: number): Promise<number> {
+    const rows = await executeQuery(PaymentModel.TOTAL_REVENUE_QUERY, [
+      tenant_id,
+    ]);
+    return rows[0]?.total_revenue;
+  }
+
   static async getAllByMembership(
     membership_id: number,
     tenant_id: number

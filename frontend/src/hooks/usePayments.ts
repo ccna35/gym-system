@@ -5,14 +5,18 @@ import type { PaymentFormData } from "../types";
 import { toast } from "../lib/toast";
 
 export const usePayments = () => {
-  const tenantId = useAuthStore((state) => state.user?.tenant_id);
-
   return useQuery({
-    queryKey: ["payments", tenantId],
+    queryKey: ["payments"],
     queryFn: () => paymentApi.getAll(),
-    enabled: !!tenantId,
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
+  });
+};
+
+export const useTotalRevenue = () => {
+  return useQuery({
+    queryKey: ["payments", "total-revenue"],
+    queryFn: () => paymentApi.getTotalRevenue(),
   });
 };
 
