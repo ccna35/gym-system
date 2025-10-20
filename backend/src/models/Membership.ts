@@ -1,4 +1,4 @@
-export type MembershipStatus = "PENDING" | "ACTIVE" | "EXPIRED" | "CANCELLED";
+export type MembershipStatus = "ACTIVE" | "EXPIRED" | "CANCELLED";
 
 export interface IMembership {
   id: number;
@@ -65,7 +65,10 @@ export class MembershipModel {
   `;
 
   static readonly SELECT_ALL_BY_MEMBER_QUERY = `
-    SELECT * FROM memberships WHERE member_id = ? AND tenant_id = ? ORDER BY created_at DESC
+    SELECT m.*, 
+      DATE_FORMAT(m.start_date, '%Y-%m-%d') as start_date,
+      DATE_FORMAT(m.end_date, '%Y-%m-%d') as end_date
+    FROM memberships m WHERE member_id = ? AND tenant_id = ? ORDER BY created_at DESC
   `;
 
   static readonly UPDATE_QUERY = `

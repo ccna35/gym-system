@@ -1,23 +1,53 @@
 import { useState } from "react";
-import { usePayments, useDeletePayment } from "../hooks/usePayments";
-import { Plus, Trash2, Loader2, DollarSign } from "lucide-react";
+import {
+  usePayments,
+  useDeletePayment,
+  useUpdatePaymentStatus,
+} from "../hooks/usePayments";
+import { Trash2, Loader2, DollarSign, Ban, CheckCircle } from "lucide-react";
 import { formatCurrency, formatDateTime } from "../lib/utils";
-import { PaymentModal } from "../components/payments/PaymentModal";
 import { t } from "../i18n";
+import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export const PaymentsPage = () => {
   const { data: payments, isLoading } = usePayments();
   const deletePayment = useDeletePayment();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const updatePaymentStatus = useUpdatePaymentStatus();
 
-  const handleDelete = async (id: number) => {
-    if (window.confirm(t.payments.deleteConfirm)) {
-      deletePayment.mutate(id);
+  const [deleteDialog, setDeleteDialog] = useState<{
+    open: boolean;
+    paymentId: number | null;
+  }>({ open: false, paymentId: null });
+
+  const [statusDialog, setStatusDialog] = useState<{
+    open: boolean;
+    paymentId: number | null;
+    currentStatus: string | null;
+  }>({ open: false, paymentId: null, currentStatus: null });
+
+  const handleDelete = (id: number) => {
+    setDeleteDialog({ open: true, paymentId: id });
+  };
+
+  const confirmDelete = () => {
+    if (deleteDialog.paymentId) {
+      deletePayment.mutate(deleteDialog.paymentId);
     }
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleToggleStatus = (id: number, currentStatus: string) => {
+    setStatusDialog({ open: true, paymentId: id, currentStatus });
+  };
+
+  const confirmToggleStatus = () => {
+    if (statusDialog.paymentId && statusDialog.currentStatus) {
+      const newStatus = statusDialog.currentStatus === "PAID" ? "VOID" : "PAID";
+      updatePaymentStatus.mutate({
+        id: statusDialog.paymentId,
+        status: newStatus,
+      });
+    }
   };
 
   // Calculate total revenue
@@ -68,13 +98,6 @@ export const PaymentsPage = () => {
           </h1>
           <p className="text-gray-600 mt-1">{t.payments.subtitle}</p>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="btn btn-primary flex items-center"
-        >
-          <Plus size={20} className="ml-2" />
-          {t.payments.recordPayment}
-        </button>
       </div>
 
       {/* Stats Cards */}
@@ -148,13 +171,40 @@ export const PaymentsPage = () => {
                       {payment.created_by_name}
                     </td>
                     <td className="table-cell">
-                      <button
-                        onClick={() => handleDelete(payment.id)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title={t.common.delete}
-                      >
-                        <Trash2 size={18} />
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          onClick={() =>
+                            handleToggleStatus(payment.id, payment.status)
+                          }
+                          variant="ghost"
+                          size="icon"
+                          className={
+                            payment.status === "PAID"
+                              ? "text-red-600 hover:bg-red-50"
+                              : "text-green-600 hover:bg-green-50"
+                          }
+                          title={
+                            payment.status === "PAID"
+                              ? "إلغاء الدفعة"
+                              : "تفعيل الدفعة"
+                          }
+                        >
+                          {payment.status === "PAID" ? (
+                            <Ban size={18} />
+                          ) : (
+                            <CheckCircle size={18} />
+                          )}
+                        </Button>
+                        <Button
+                          onClick={() => handleDelete(payment.id)}
+                          variant="ghost"
+                          size="icon"
+                          className="text-red-600 hover:bg-red-50"
+                          title={t.common.delete}
+                        >
+                          <Trash2 size={18} />
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -168,8 +218,47 @@ export const PaymentsPage = () => {
         )}
       </div>
 
-      {/* Payment Modal */}
-      <PaymentModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        open={deleteDialog.open}
+        onOpenChange={(open) =>
+          setDeleteDialog({ open, paymentId: deleteDialog.paymentId })
+        }
+        onConfirm={confirmDelete}
+        title="حذف الدفعة"
+        description={t.payments.deleteConfirm}
+        confirmText="حذف"
+        cancelText="إلغاء"
+        variant="destructive"
+      />
+
+      {/* Status Toggle Confirmation Dialog */}
+      <ConfirmDialog
+        open={statusDialog.open}
+        onOpenChange={(open) =>
+          setStatusDialog({
+            open,
+            paymentId: statusDialog.paymentId,
+            currentStatus: statusDialog.currentStatus,
+          })
+        }
+        onConfirm={confirmToggleStatus}
+        title={
+          statusDialog.currentStatus === "PAID"
+            ? "إلغاء الدفعة"
+            : "تفعيل الدفعة"
+        }
+        description={
+          statusDialog.currentStatus === "PAID"
+            ? "هل أنت متأكد من إلغاء هذه الدفعة؟ سيتم تغيير حالة الدفعة إلى ملغية."
+            : "هل أنت متأكد من تفعيل هذه الدفعة؟ سيتم تغيير حالة الدفعة إلى مدفوعة."
+        }
+        confirmText="تأكيد"
+        cancelText="إلغاء"
+        variant={
+          statusDialog.currentStatus === "PAID" ? "destructive" : "default"
+        }
+      />
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { MembersPage } from "./pages/MembersPage";
+import MemberDetailsPage from "./pages/MemberDetailsPage";
 import { PlansPage } from "./pages/PlansPage";
 import { MembershipsPage } from "./pages/MembershipsPage";
 import { PaymentsPage } from "./pages/PaymentsPage";
@@ -35,6 +36,7 @@ function App() {
             <Route element={<DashboardLayout />}>
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/members" element={<MembersPage />} />
+              <Route path="/members/:id" element={<MemberDetailsPage />} />
               <Route path="/plans" element={<PlansPage />} />
               <Route path="/memberships" element={<MembershipsPage />} />
               <Route path="/payments" element={<PaymentsPage />} />

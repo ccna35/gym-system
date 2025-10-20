@@ -5,21 +5,31 @@ import { formatCurrency } from "../lib/utils";
 import { PlanModal } from "../components/plans/PlanModal";
 import type { Plan } from "../types";
 import { t } from "../i18n";
+import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export const PlansPage = () => {
   const { data: plans, isLoading } = usePlans();
   const deletePlan = useDeletePlan();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState<{
+    open: boolean;
+    planId: number | null;
+  }>({ open: false, planId: null });
 
   const handleEdit = (plan: Plan) => {
     setEditingPlan(plan);
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
-    if (window.confirm(t.plans.deleteConfirm)) {
-      deletePlan.mutate(id);
+  const handleDelete = (id: number) => {
+    setDeleteDialog({ open: true, planId: id });
+  };
+
+  const confirmDelete = () => {
+    if (deleteDialog.planId) {
+      deletePlan.mutate(deleteDialog.planId);
     }
   };
 
@@ -44,13 +54,13 @@ export const PlansPage = () => {
           <h1 className="text-3xl font-bold text-gray-900">{t.plans.title}</h1>
           <p className="text-gray-600 mt-1">{t.plans.subtitle}</p>
         </div>
-        <button
+        <Button
           onClick={() => setIsModalOpen(true)}
-          className="btn btn-primary flex items-center"
+          className="flex items-center gap-2"
         >
-          <Plus size={20} className="ml-2" />
+          <Plus size={20} />
           {t.plans.addPlan}
-        </button>
+        </Button>
       </div>
 
       {/* Plans Grid */}
@@ -68,20 +78,24 @@ export const PlansPage = () => {
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-xl font-bold text-gray-900">{plan.name}</h3>
                 <div className="flex gap-2">
-                  <button
+                  <Button
                     onClick={() => handleEdit(plan)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    variant="ghost"
+                    size="icon"
+                    className="text-blue-600 hover:bg-blue-50"
                     title={t.common.edit}
                   >
                     <Edit size={18} />
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => handleDelete(plan.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    variant="ghost"
+                    size="icon"
+                    className="text-red-600 hover:bg-red-50"
                     title={t.common.delete}
                   >
                     <Trash2 size={18} />
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -123,6 +137,20 @@ export const PlansPage = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         plan={editingPlan}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        open={deleteDialog.open}
+        onOpenChange={(open) =>
+          setDeleteDialog({ open, planId: deleteDialog.planId })
+        }
+        onConfirm={confirmDelete}
+        title="حذف الباقة"
+        description={t.plans.deleteConfirm}
+        confirmText="حذف"
+        cancelText="إلغاء"
+        variant="destructive"
       />
     </div>
   );

@@ -1,33 +1,52 @@
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useMembers, useDeleteMember } from "../hooks/useMembers";
-import { Plus, Edit, Trash2, Search, Loader2 } from "lucide-react";
+import { Plus, Edit, Trash2, Search, Loader2, Info } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
 import { formatDate, getMembershipStatusColor } from "../lib/utils";
 import { MemberModal } from "../components/members/MemberModal";
 import type { Member } from "../types";
 import { t } from "../i18n";
 
 export const MembersPage = () => {
+  const [searchParams] = useSearchParams();
   const { data: members, isLoading } = useMembers();
   const deleteMember = useDeleteMember();
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<Member | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState<{
+    open: boolean;
+    memberId: number | null;
+  }>({ open: false, memberId: null });
 
-  const filteredMembers = members?.filter(
-    (member) =>
+  const statusFilter = (searchParams.get("status") || "").toUpperCase();
+  const validStatuses = new Set(["ACTIVE", "EXPIRING_SOON", "EXPIRED"]);
+  const filteredMembers = members?.filter((member) => {
+    const matchesSearch =
       member.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.phone?.includes(searchQuery)
-  );
+      member.phone?.includes(searchQuery);
+    const matchesStatus =
+      !validStatuses.has(statusFilter) ||
+      member.membership_status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   const handleEdit = (member: Member) => {
     setEditingMember(member);
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
-    if (window.confirm(t.members.deleteConfirm)) {
-      deleteMember.mutate(id);
+  const handleDelete = (id: number) => {
+    setDeleteDialog({ open: true, memberId: id });
+  };
+
+  const confirmDelete = () => {
+    if (deleteDialog.memberId) {
+      deleteMember.mutate(deleteDialog.memberId);
     }
   };
 
@@ -67,13 +86,13 @@ export const MembersPage = () => {
           </h1>
           <p className="text-gray-600 mt-1">{t.members.subtitle}</p>
         </div>
-        <button
+        <Button
           onClick={() => setIsModalOpen(true)}
-          className="btn btn-primary flex items-center"
+          className="flex items-center gap-2"
         >
           <Plus size={20} className="ml-2" />
           {t.members.addMember}
-        </button>
+        </Button>
       </div>
 
       {/* Search Bar */}
@@ -83,12 +102,12 @@ export const MembersPage = () => {
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
             size={20}
           />
-          <input
+          <Input
             type="text"
             placeholder={t.members.searchMembers}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="input pr-10"
+            className="pr-10"
           />
         </div>
       </div>
@@ -158,20 +177,31 @@ export const MembersPage = () => {
                     </td>
                     <td className="table-cell">
                       <div className="flex items-center gap-2">
-                        <button
+                        <Link
+                          to={`/members/${member.id}`}
+                          className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                          title="تفاصيل العضو"
+                        >
+                          <Info size={18} />
+                        </Link>
+                        <Button
                           onClick={() => handleEdit(member)}
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          variant="ghost"
+                          size="icon"
+                          className="text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                           title={t.common.edit}
                         >
                           <Edit size={18} />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           onClick={() => handleDelete(member.id)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          variant="ghost"
+                          size="icon"
+                          className="text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           title={t.common.delete}
                         >
                           <Trash2 size={18} />
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -187,6 +217,20 @@ export const MembersPage = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         member={editingMember}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        open={deleteDialog.open}
+        onOpenChange={(open) =>
+          setDeleteDialog({ open, memberId: deleteDialog.memberId })
+        }
+        onConfirm={confirmDelete}
+        title="حذف العضو"
+        description={t.members.deleteConfirm}
+        confirmText="حذف"
+        cancelText="إلغاء"
+        variant="destructive"
       />
     </div>
   );

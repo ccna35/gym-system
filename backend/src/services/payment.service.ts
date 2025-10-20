@@ -9,7 +9,8 @@ export class PaymentService {
       input.membership_id,
       input.tenant_id
     );
-    if (!membership || !["ACTIVE", "PENDING"].includes(membership.status)) {
+
+    if (!membership || !["ACTIVE", "EXPIRED"].includes(membership.status)) {
       throw new Error("Invalid or inactive membership");
     }
     // Check if this membership still has remaining balance
@@ -82,5 +83,23 @@ export class PaymentService {
       tenant_id,
     ]);
     return result.affectedRows > 0;
+  }
+
+  static async updateStatus(
+    id: number,
+    tenant_id: number,
+    status: "PAID" | "VOID"
+  ): Promise<IPayment | null> {
+    const result = await executeQuery(PaymentModel.UPDATE_STATUS_QUERY, [
+      status,
+      id,
+      tenant_id,
+    ]);
+
+    if (result.affectedRows === 0) {
+      return null;
+    }
+
+    return await this.getById(id, tenant_id);
   }
 }

@@ -35,6 +35,12 @@ router.get(
 // Only admins can delete payments
 router.use(requireAdmin);
 
+router.patch(
+  "/:id/status",
+  validate({ params: paymentIdSchema }),
+  PaymentController.updateStatus
+);
+
 router.delete(
   "/:id",
   validate({ params: paymentIdSchema }),

@@ -13,6 +13,9 @@ import {
 import { useMembers } from "../../hooks/useMembers";
 import type { Membership } from "../../types";
 import { t } from "../../i18n";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface MembershipModalProps {
   isOpen: boolean;
@@ -92,25 +95,24 @@ export const MembershipModal = ({
                 ? t.memberships.editMembership
                 : t.memberships.newMembership}
             </h3>
-            <button
+            <Button
               onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
+              variant="ghost"
+              size="icon"
+              className="text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
             >
               <X size={24} />
-            </button>
+            </Button>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Price */}
             <div>
-              <label htmlFor="price" className="label">
-                {t.memberships.price} *
-              </label>
-              <input
+              <Label htmlFor="price">{t.memberships.price} *</Label>
+              <Input
                 id="price"
                 type="number"
-                className="input"
                 min={0}
                 step={1}
                 {...register("price", { valueAsNumber: true })}
@@ -121,9 +123,7 @@ export const MembershipModal = ({
             </div>
             {/* Member Selection */}
             <div>
-              <label htmlFor="member_id" className="label">
-                {t.memberships.member} *
-              </label>
+              <Label htmlFor="member_id">{t.memberships.member} *</Label>
               <select
                 id="member_id"
                 className="input"
@@ -143,15 +143,8 @@ export const MembershipModal = ({
 
             {/* Start Date */}
             <div>
-              <label htmlFor="start_date" className="label">
-                {t.memberships.startDate} *
-              </label>
-              <input
-                id="start_date"
-                type="date"
-                className="input"
-                {...register("start_date")}
-              />
+              <Label htmlFor="start_date">{t.memberships.startDate} *</Label>
+              <Input id="start_date" type="date" {...register("start_date")} />
               {errors.start_date && (
                 <p className="error-message">{errors.start_date.message}</p>
               )}
@@ -159,17 +152,17 @@ export const MembershipModal = ({
 
             {/* Actions */}
             <div className="flex justify-end gap-3 pt-4 border-t">
-              <button
+              <Button
                 type="button"
                 onClick={onClose}
-                className="btn btn-secondary"
+                variant="secondary"
                 disabled={isPending}
               >
                 {t.common.cancel}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
-                className="btn btn-primary flex items-center"
+                className="flex items-center"
                 disabled={isPending}
               >
                 {isPending ? (
@@ -183,7 +176,7 @@ export const MembershipModal = ({
                     {t.memberships.title.slice(0, -2)}
                   </>
                 )}
-              </button>
+              </Button>
             </div>
           </form>
         </div>

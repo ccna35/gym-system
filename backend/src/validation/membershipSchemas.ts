@@ -8,8 +8,8 @@ export const createMembershipSchema = Joi.object({
     .required(),
   price: Joi.number().integer().min(0).required(),
   status: Joi.string()
-    .valid("PENDING", "ACTIVE", "EXPIRED", "CANCELLED")
-    .default("PENDING"),
+    .valid("ACTIVE", "EXPIRED", "CANCELLED")
+    .default("ACTIVE"),
   notes: Joi.string().max(255).allow(null, "").optional(),
 });
 
@@ -22,9 +22,7 @@ export const updateMembershipSchema = Joi.object({
     .pattern(/^\d{4}-\d{2}-\d{2}$/)
     .optional(),
   price_cents: Joi.number().integer().min(0).optional(),
-  status: Joi.string()
-    .valid("PENDING", "ACTIVE", "EXPIRED", "CANCELLED")
-    .optional(),
+  status: Joi.string().valid("ACTIVE", "EXPIRED", "CANCELLED").optional(),
   notes: Joi.string().max(255).allow(null, "").optional(),
 });
 

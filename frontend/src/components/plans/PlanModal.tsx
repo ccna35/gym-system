@@ -6,6 +6,9 @@ import { planSchema, type PlanFormData } from "../../lib/validations";
 import { useCreatePlan, useUpdatePlan } from "../../hooks/usePlans";
 import type { Plan } from "../../types";
 import { t } from "../../i18n";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface PlanModalProps {
   isOpen: boolean;
@@ -75,25 +78,24 @@ export const PlanModal = ({ isOpen, onClose, plan }: PlanModalProps) => {
             <h3 className="text-2xl font-bold text-gray-900">
               {plan ? t.plans.editPlan : t.plans.newPlan}
             </h3>
-            <button
+            <Button
               onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
+              variant="ghost"
+              size="icon"
+              className="text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
             >
               <X size={24} />
-            </button>
+            </Button>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Name */}
             <div>
-              <label htmlFor="name" className="label">
-                {t.plans.planName} *
-              </label>
-              <input
+              <Label htmlFor="name">{t.plans.planName} *</Label>
+              <Input
                 id="name"
                 type="text"
-                className="input"
                 placeholder={t.plans.planName}
                 {...register("name")}
               />
@@ -104,9 +106,7 @@ export const PlanModal = ({ isOpen, onClose, plan }: PlanModalProps) => {
 
             {/* Description */}
             <div>
-              <label htmlFor="description" className="label">
-                {t.plans.description}
-              </label>
+              <Label htmlFor="description">{t.plans.description}</Label>
               <textarea
                 id="description"
                 rows={3}
@@ -121,14 +121,13 @@ export const PlanModal = ({ isOpen, onClose, plan }: PlanModalProps) => {
 
             {/* Duration */}
             <div>
-              <label htmlFor="duration_months" className="label">
+              <Label htmlFor="duration_months">
                 {t.plans.durationMonths} *
-              </label>
-              <input
+              </Label>
+              <Input
                 id="duration_months"
                 type="number"
-                min="1"
-                className="input"
+                min={1}
                 {...register("duration_months", { valueAsNumber: true })}
               />
               {errors.duration_months && (
@@ -140,15 +139,12 @@ export const PlanModal = ({ isOpen, onClose, plan }: PlanModalProps) => {
 
             {/* Price */}
             <div>
-              <label htmlFor="price" className="label">
-                {t.plans.price} ($) *
-              </label>
-              <input
+              <Label htmlFor="price">{t.plans.price} ($) *</Label>
+              <Input
                 id="price"
                 type="number"
-                min="0"
-                step="0.01"
-                className="input"
+                min={0}
+                step={0.01}
                 {...register("price", { valueAsNumber: true })}
               />
               {errors.price && (
@@ -158,17 +154,17 @@ export const PlanModal = ({ isOpen, onClose, plan }: PlanModalProps) => {
 
             {/* Actions */}
             <div className="flex justify-end gap-3 pt-4 border-t">
-              <button
+              <Button
                 type="button"
                 onClick={onClose}
-                className="btn btn-secondary"
+                variant="secondary"
                 disabled={isPending}
               >
                 {t.common.cancel}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
-                className="btn btn-primary flex items-center"
+                className="flex items-center"
                 disabled={isPending}
               >
                 {isPending ? (
@@ -182,7 +178,7 @@ export const PlanModal = ({ isOpen, onClose, plan }: PlanModalProps) => {
                     {t.plans.title.slice(0, -1)}
                   </>
                 )}
-              </button>
+              </Button>
             </div>
           </form>
         </div>

@@ -46,7 +46,8 @@ export const useCreateMembership = () => {
       toast.success("Membership created successfully!");
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to create membership");
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || "Failed to create membership");
     },
   });
 };

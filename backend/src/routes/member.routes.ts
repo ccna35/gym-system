@@ -23,6 +23,13 @@ router.get(
   validate({ params: memberIdSchema }),
   MemberController.getById
 );
+
+// New: Get member details (info, memberships, payments, stats)
+router.get(
+  "/:id/details",
+  validate({ params: memberIdSchema }),
+  MemberController.getDetails
+);
 router.put(
   "/:id",
   validate({ params: memberIdSchema, body: updateMemberSchema }),

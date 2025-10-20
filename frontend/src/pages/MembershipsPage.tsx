@@ -5,6 +5,8 @@ import { formatDate, getStatusColor, formatCurrency } from "../lib/utils";
 import { MembershipModal } from "../components/memberships/MembershipModal";
 import type { Membership } from "../types";
 import { t } from "../i18n";
+import { Button } from "@/components/ui/button";
+import { getMembershipStatusLabel } from "@/lib/membershipUtils";
 
 export const MembershipsPage = () => {
   const { data: memberships, isLoading } = useMemberships();
@@ -12,21 +14,6 @@ export const MembershipsPage = () => {
   const [editingMembership, setEditingMembership] = useState<Membership | null>(
     null
   );
-
-  const getMembershipStatusLabel = (status: string) => {
-    switch (status) {
-      case "ACTIVE":
-        return t.memberships.active;
-      case "EXPIRING_SOON":
-        return t.memberships.expiringSoon;
-      case "EXPIRED":
-        return t.memberships.expired;
-      case "SUSPENDED":
-        return t.memberships.suspended;
-      default:
-        return status;
-    }
-  };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -51,13 +38,13 @@ export const MembershipsPage = () => {
           </h1>
           <p className="text-gray-600 mt-1">{t.memberships.subtitle}</p>
         </div>
-        <button
+        <Button
           onClick={() => setIsModalOpen(true)}
-          className="btn btn-primary flex items-center"
+          className="flex items-center gap-2"
         >
-          <Plus size={20} className="ml-2" />
+          <Plus size={20} />
           {t.memberships.addMembership}
-        </button>
+        </Button>
       </div>
 
       {/* Stats Cards */}
