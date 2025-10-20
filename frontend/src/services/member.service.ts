@@ -1,20 +1,29 @@
 import axiosInstance from "../lib/axios";
 import type { Member, MemberFormData, ApiResponse } from "../types";
 
+export interface MemberDetailsMembership {
+  id: number;
+  tenant_id?: number;
+  member_id: number;
+  plan_id?: number | null;
+  start_date: string;
+  end_date: string | null;
+  status: "ACTIVE" | "EXPIRED" | "CANCELLED";
+  notes?: string | null;
+  created_by: number;
+  created_at: string;
+  updated_at: string;
+  // Enriched fields from controller
+  price_cents?: number; // raw from DB
+  price?: number; // sometimes formatted to dollars
+  payments?: import("../types").Payment[];
+  paid?: number;
+  remaining?: number;
+}
+
 export interface MemberDetails {
   member: Member;
-  memberships: Array<{
-    id: number;
-    member_id: number;
-    start_date: string;
-    end_date: string | null;
-    price: number;
-    status: "ACTIVE" | "EXPIRED" | "CANCELLED";
-    notes?: string | null;
-    created_by: number;
-    created_at: string;
-    updated_at: string;
-  }>;
+  memberships: Array<MemberDetailsMembership>;
   stats: {
     totalPaid: number;
     totalRemaining: number;

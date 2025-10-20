@@ -1,13 +1,14 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "path";
+// Note: Keep config portable without relying on Node type declarations
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      // Vite resolves from project root, so '/src' is safe and cross-platform
+      "@": "/src",
     },
   },
 });

@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useMemberDetails } from "../hooks/useMembers";
+import type { MemberDetailsMembership } from "../services/member.service";
 import { formatDate, getStatusColor } from "../lib/utils";
 import { useCreatePayment } from "../hooks/usePayments";
 import { useQueryClient } from "@tanstack/react-query";
@@ -36,7 +37,7 @@ export default function MemberDetailsPage() {
   if (!data || !data.member) return <div>{t.common.noData}</div>;
 
   const member = data.member;
-  const memberships = data.memberships || [];
+  const memberships = (data.memberships || []) as MemberDetailsMembership[];
   const stats = data.stats || { totalPaid: 0, totalRemaining: 0 };
 
   // Sort memberships by start_date descending
@@ -159,9 +160,6 @@ export default function MemberDetailsPage() {
             <thead className="bg-gray-100">
               <tr>
                 <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">
-                  {t.memberships.plan}
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">
                   {t.memberships.startDate}
                 </th>
                 <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">
@@ -194,13 +192,10 @@ export default function MemberDetailsPage() {
                   className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
                 >
                   <td className="px-4 py-3 border-b text-sm">
-                    {m.plan_id || "-"}
-                  </td>
-                  <td className="px-4 py-3 border-b text-sm">
                     {formatDate(m.start_date)}
                   </td>
                   <td className="px-4 py-3 border-b text-sm">
-                    {formatDate(m.end_date)}
+                    {m.end_date ? formatDate(m.end_date) : "-"}
                   </td>
                   {/* <td className="px-4 py-3 border-b text-sm">{m.status}</td> */}
                   <td className="table-cell">
@@ -213,16 +208,22 @@ export default function MemberDetailsPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 border-b text-sm">
-                    {(m.price_cents / 100).toFixed(2)}
+                    {(() => {
+                      const val =
+                        typeof m.price_cents === "number"
+                          ? m.price_cents / 100
+                          : m.price;
+                      return typeof val === "number" ? val.toFixed(2) : "-";
+                    })()}
                   </td>
                   <td className="px-4 py-3 border-b text-sm">
-                    {m.payments ? m.payments.length : 0}
+                    {Array.isArray(m.payments) ? m.payments.length : 0}
                   </td>
                   <td className="px-4 py-3 border-b text-sm text-red-600 font-semibold">
-                    {m.remaining.toFixed(2)}
+                    {(m.remaining ?? 0).toFixed(2)}
                   </td>
                   <td className="px-4 py-3 border-b text-sm text-green-600 font-semibold">
-                    {m.paid.toFixed(2)}
+                    {(m.paid ?? 0).toFixed(2)}
                   </td>
                   <td className="px-4 py-3 border-b text-sm">
                     <button
