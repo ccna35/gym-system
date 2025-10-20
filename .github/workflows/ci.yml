@@ -29,11 +29,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: TypeScript compilation check
-        run: npm run build
-
-      - name: Check for TypeScript errors
+      - name: TypeScript type check
         run: npx tsc --noEmit --pretty
+
+      - name: Build verification
+        run: npm run build
 
   frontend-checks:
     name: Frontend - Type Check & Lint
